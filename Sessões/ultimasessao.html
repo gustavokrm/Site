@@ -6,7 +6,7 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
       </head>
 <body>
-
+    <metal:main fill-slot="main">
         <script tal:attributes="src string:${portal_url}/++theme++Azul/javascript/pautareuniao.js"></script>
         <h1 id="titulo-pagina">Pauta da última reunião</h1>
         <h1 class="documentFirstHeading" id="titulo-sessao">Última Reunião Plenária</h1>
@@ -20,5 +20,6 @@
         <h2 class="secao-pauta">Votação (Ordem do Dia)</h2>
         <div id="conteudo-ordem-dia" class="container-cards"></div>
 
+    </metal:main>
 </body>
 </html>
