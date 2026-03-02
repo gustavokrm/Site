@@ -1,36 +1,30 @@
-<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt" lang="pt"
       metal:use-macro="here/main_template/macros/master">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link rel="stylesheet" href="style.css">
-      </head>
 <body>
-     <script src="script.js"></script>
-    <h1>Atas das Reuniões</h1>
 
-    <p>Pesquise as atas das reuniões ordinárias, extraordinárias e solenes.</br>
-    Você também pode baixar as atas em pdf em seu computador ou celular.</br>
-    Selecione um ano na caixinha abaixo e clique em pesquisar.</br>
-    </p>
+    <metal:main fill-slot="main">
 
-    <div class="pesquisa-atas">
-      <label for="ano-ata"><strong>Ano:</strong></label>
+        <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/++theme++Azul/css/style.css" />
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/++theme++Azul/javascript/buscaratas.js"></script>
 
-      <select id="ano-ata" class="caixa-selecao">
-        <option value="">Selecione</option>
-      </select>
-      <button type="button" id="btn-pesquisar" class="botao-pesquisar">Pesquisar</button>
-    </div>
+        <h1 class="documentFirstHeading">Atas das Reuniões</h1>
 
-    <div id="lista-sessoes"></div>
+        <div class="pesquisa-atas" style="margin-bottom: 20px;">
+            <label for="ano-ata"><strong>Ano:</strong></label>
+            <select id="ano-ata" class="caixa-selecao">
+                <option value="">Selecione</option>
+            </select>
+            <button type="button" id="btn-pesquisar" class="botao-pesquisar">Pesquisar</button>
+        </div>
 
-<div id="controles-paginacao" style="display: none; align-items: center; gap: 15px; margin-top: 20px; margin-bottom: 30px;">
-    <button type="button" id="btn-anterior" class="botao-pesquisar-atas" disabled>« Anterior</button>
-    <span id="info-pagina" style="font-weight: bold; color: #555;">Página 1</span>
-    <button type="button" id="btn-proximo" class="botao-pesquisar-atas" disabled>Próxima »</button>
-</div>
+        <div id="lista-sessoes"></div>
+
+        <div id="controles-paginacao" style="display: none; align-items: center; gap: 15px; margin-top: 20px; margin-bottom: 30px;">
+            <button type="button" id="btn-anterior" class="botao-pesquisar-atas" disabled="disabled">« Anterior</button>
+            <span id="info-pagina" style="font-weight: bold; color: #555;">Página 1</span>
+            <button type="button" id="btn-proximo" class="botao-pesquisar-atas" disabled="disabled">Próxima »</button>
+        </div>
+
+    </metal:main>
 </body>
 </html>

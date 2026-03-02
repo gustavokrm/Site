@@ -634,3 +634,53 @@ footer p {
     background-color:#61baed;
     color: white;
 }
+
+.area-pesquisa {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.pesquisa-atas {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.caixa-selecao {
+
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 16px;
+  color: #333;
+  min-width: 150px;
+  cursor: pointer;
+}
+
+.caixa-selecao:focus {
+  border-color: #38b6ff;
+  outline: none;
+}
+
+.botao-pesquisar {
+  background-color: #38b6ff;
+  display: inline-block;
+  color: white; /* texto em branco */
+  padding: 9px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+
+}
+
+.botao-pesquisar:hover {
+  background-color: #008ee0;
+}
+
