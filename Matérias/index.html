@@ -10,7 +10,7 @@ metal:use-macro="here/main_template/macros/master">
         <script type="text/javascript" tal:attributes="src string:${portal_url}/++theme++Azul/javascript/buscarmaterias.js"></script>-->
 
 
-        <script type="text/javascript src="script.js></script>
+        <script src="script.js"></script>
 
         <h1 class="documentFirstHeading">Pesquisar matéria legislativa</h1>
         <h3 class="documentSecondHeading" style="color: red;">Os campos marcados com * são obrigatórios</h3>
@@ -19,14 +19,14 @@ metal:use-macro="here/main_template/macros/master">
             <div class="grupo-campo">
             <label for="tipo-materia"><strong>Tipo de matéria *</strong></label>
             <select id="tipo-materia" class="selecao-tipo">
-                <option value="">---</option>
+                <option value="">Selecione o tipo de matéria</option>
             </select>
             </div>
 
             <div class="grupo-campo">
             <label for="ano-materia"><strong>Ano da matéria *</strong></label>
             <select id="ano-materia" class="selecao-ano">
-                <option value="">---</option>
+                <option value="">Ano</option>
             </select>
             </div>
 
@@ -38,14 +38,14 @@ metal:use-macro="here/main_template/macros/master">
             <div class="grupo-campo">
             <label for="numero-materia"><strong>Número</strong></label>
             <select id="numero-materia" class="selecao-numero">
-                <option value="">---</option>
+                <option value="">Número</option>
             </select>
             </div>
 
             <div class="grupo-campo">
             <label for="autor-materia"><strong>Autor</strong></label>
             <select id="autor-materia" class="selecao-autor">
-                <option value="">---</option>
+                <option value="">Selecione o autor</option>
             </select>
             </div>
 
