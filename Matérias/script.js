@@ -47,6 +47,19 @@ document.addEventListener('DOMContentLoaded', () =>{
         }
     });
 
+    document.getElementById('btn-limpar').addEventListener('click', () => {
+        // limpa todos os campos
+        document.getElementById('tipo-materia').value = "";
+        document.getElementById('ano-materia').value = "";
+        document.getElementById('numero-materia').value = "";
+        document.getElementById('autor-materia').value = "";
+        document.getElementById('pesquisar-expressoes').value = "";
+
+        // limpa os resultados da tela
+        document.getElementById('lista-materias').innerHTML = "";
+        document.getElementById('controles-paginacao').innerHTML = "";
+    });
+
 });
 
 async function carregarTiposMateria(){
@@ -219,10 +232,10 @@ function renderizarResultados(dados) {
     try{
 
         if (dados.length === 0) {
-            aler("Nenhuma matéria encontrada com esses filtros");
-            /*
+            alert("Nenhuma matéria encontrada com esses filtros");
+
             btnAnterior.disabled = true;
-            btnProximo.disabled = true; */
+            btnProximo.disabled = true;
             divPaginacao.style.display="none";
             return;
         }
@@ -260,8 +273,8 @@ function renderizarResultados(dados) {
     } catch (erro) {
 
         alert("Houve um erro ao buscar os dados do SAPL. Tente novamente mais tarde.");
-        btnAnterior.disabled = true;
-        btnProximo.disabled = true;
+        //btnAnterior.disabled = true;
+        //btnProximo.disabled = true;
         divPaginacao.style.display = "none";
         console.error("Houve um erro ao se conectar com o SAPL",erro);
 
