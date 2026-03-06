@@ -1,11 +1,17 @@
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt" lang="pt"
-      metal:use-macro="here/main_template/macros/master">
+metal:use-macro="here/main_template/macros/master">
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
 <body>
 
     <metal:main fill-slot="main">
 
-        <link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/++theme++Azul/css/style.css" />
-        <script type="text/javascript" tal:attributes="src string:${portal_url}/++theme++Azul/javascript/buscaratas.js"></script>
+        <!--<link rel="stylesheet" type="text/css" tal:attributes="href string:${portal_url}/++theme++Azul/css/style.css" />
+        <script type="text/javascript" tal:attributes="src string:${portal_url}/++theme++Azul/javascript/buscaratas.js"></script>-->
+
+        <script src="script.js"></script>
 
         <h1 class="documentFirstHeading">Atas das Reuniões</h1>
 

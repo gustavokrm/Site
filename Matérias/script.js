@@ -1,15 +1,5 @@
 let paginaAtual = 1;
 
-function escaparHTML(texto) {
-    if(!texto) return "";
-    return texto.toString()
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039");
-}
-
 document.addEventListener('DOMContentLoaded', () =>{
 
     const selectAno = document.getElementById('ano-materia');
@@ -25,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () =>{
     }
 
     selectAno.value = "";
-    anoPesquisado = anoAtual;
+    let anoPesquisado = anoAtual;
 
     carregarTiposMateria();
     carregarNomeAutor();
@@ -98,22 +88,25 @@ async function carregarNomeAutor(){
     let idAutor = "";
     const selectAutor = document.getElementById('autor-materia');
     let urlAutor = `https://sapl.tapira.mg.leg.br/api/base/autor/${idAutor}?tipo=2`;
+    let todosAutores = [];
 
     try{
 
-        let todosAutores = [];
+        let contadorPagina = 0;
 
-        while(urlAutor)  {
+        while(urlAutor && contadorPagina < 5)  {
 
             const resposta = await fetch(urlAutor);
             if(!resposta.ok){
-                throw new Error(`Erro ao acessar os autores das matérias: ${resposta.status}`);
+                break;
             }
 
             const dados = await resposta.json();
-            const listaDaPagina = dados.results || dados;
+            const listaDaPagina = dados.results || [];
             todosAutores = todosAutores.concat(listaDaPagina);
-            urlAutor = dados.pagination.links.next;
+
+            urlAutor = dados.pagination && dados.pagination.links ? dados.pagination.links.next : null;
+            contadorPagina++;
         }
 
         todosAutores.forEach(autor => {
@@ -139,7 +132,7 @@ async function pegarNomeDoAutor(idAutor){
         return data.nome || "Autor Desconhecido";
     } catch (erro){
         console.error("Erro ao buscar autor", erro);
-        return "Erro ao carregar";
+        return "Erro ao carregar nomes dos autores.";
     }
 }
 
@@ -178,15 +171,15 @@ async function pesquisaMateria(anoPesquisado, paginaAtual) {
         params.append('autores', autor); // Verifique se o nome exato na API é 'autor' ou 'autoria'
     }
     if (expressoes) {
-        params.append('ementa__icontains', expressoes); // No padrão SAPL/Django, buscas por texto na ementa costumam usar esse formato
+        params.append('ementa__icontains', expressoes);
     }
 
-    // A URL final ficará algo como: https://sapl.../?tipo=1&ano=2024&numero=15
+
     const urlCompleta = `${baseUrl}?${params.toString()}`;
 
     // 4. Fazer a requisição na API
     try {
-        // Mostra um "Carregando..." no console ou na tela (opcional)
+
         console.log("Buscando dados em:", urlCompleta);
 
         const resposta = await fetch(urlCompleta);
@@ -225,23 +218,22 @@ function renderizarResultados(dados) {
     const btnProximo = document.getElementById('btn-proximo');
     const infoPagina = document.getElementById('info-pagina');
     const divPaginacao = document.getElementById('controles-paginacao');
-    const containerResultados = document.getElementById('lista-materias'); // Crie uma div com essa classe para receber os cards
+    const containerResultados = document.getElementById('lista-sessoes');
+
     containerResultados.innerHTML = ''; // Limpa os resultados da busca anterior
 
     const listaMaterias = dados.results || [];
 
-    try{
+        if (listaMaterias.length === 0) {
 
-        if (dados.length === 0) {
-            alert("Nenhuma matéria encontrada com esses filtros");
+            containerResultados.innerHTML = `<p style="margin-top:20px;">Nenhuma matéria encontrada com esses filtros. Por favor, faça uma nova pesquisa.</p>`;
 
-            btnAnterior.disabled = true;
-            btnProximo.disabled = true;
             divPaginacao.style.display="none";
+
             return;
         }
-
-        listaMaterias.forEach(materia => {
+        try{
+            listaMaterias.forEach(materia => {
             // Monta o HTML do card (.caixa-sessao)
 
             const baixarMateria = materia.texto_original
@@ -271,11 +263,10 @@ function renderizarResultados(dados) {
         infoPagina.textContent = `Página ${dados.pagination.page} de ${dados.pagination.total_pages}`;
 
         divPaginacao.style.display = "flex";
+
     } catch (erro) {
 
-        alert("Houve um erro ao buscar os dados do SAPL. Tente novamente mais tarde.");
-        //btnAnterior.disabled = true;
-        //btnProximo.disabled = true;
+        containerResultados.innerHTML = "<p>Houve um erro ao buscar os dados do SAPL. Tente novamente mais tarde.</p>"
         divPaginacao.style.display = "none";
         console.error("Houve um erro ao se conectar com o SAPL",erro);
 

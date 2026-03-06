@@ -5,22 +5,13 @@
  function escaparHTML(texto) {
 
      if (!texto) return "";
-
      return texto.toString()
-
      .replace(/&/g, "&amp;")
-
      .replace(/</g, "&lt;")
-
      .replace(/>/g, "&gt;")
-
      .replace(/"/g, "&quot;")
-
      .replace(/'/g, "&#039;");
-
  }
-
-
 
  document.addEventListener('DOMContentLoaded', () => {
 
@@ -34,18 +25,13 @@
      for (let ano = anoAtual; ano >= anoInicial; ano--) {
 
          const novaOpcao = document.createElement('option');
-
          novaOpcao.value = ano;
-
          novaOpcao.textContent = ano;
-
          selectAno.appendChild(novaOpcao);
-
      }
 
 
      selectAno.value = "";
-
      anoPesquisado = anoAtual;
 
 
@@ -86,86 +72,93 @@
      });
      // Inicia a primeira busca na página 1
 
-     carregarSessoes(anoPesquisado, paginaAtual);
+     //carregarSessoes(anoPesquisado, paginaAtual);
 
  });
 
+async function carregarSessoes(ano, pagina) {
 
- async function carregarSessoes(ano, pagina) {
+    const url = "https://sapl.tapira.mg.leg.br/api/sessao/sessaoplenaria/";
+    const params = `?data_inicio__year=${ano}&o=-data_inicio&page=${pagina}&page_size=5`;
 
-     const url = "https://sapl.tapira.mg.leg.br/api/sessao/sessaoplenaria/";
-     const params = `?data_inicio__year=${ano}&o=-data_inicio&page=${pagina}&page_size=10`;
-     const container = document.getElementById('lista-sessoes');
-     const divPaginacao = document.getElementById('controles-paginacao');
-     const btnAnterior = document.getElementById('btn-anterior');
-     const btnProximo = document.getElementById('btn-proximo');
-     const infoPagina = document.getElementById('info-pagina');
+    try {
+        const response = await fetch(url + params);
 
-     container.innerHTML = `<p style="color:#666; margin-top:20px;"><em>Buscando atas de ${ano} (Página ${pagina})...</em></p>`;
-     divPaginacao.style.display = "none";
+        if(!response.ok){
+            throw new Error("Erro na resposta da API");
+        }
 
-     try {
+        const dados = await response.json();
 
-         const response = await fetch(url + params);
+        renderizarResultados(dados);
 
-         if (!response.ok) {
-             throw new Error("Erro na resposta da API");
-         }
+    } catch (erro){
+        console.error("Falha ao buscar as atas:", erro);
+        alert("Houve um erro ao buscar os dados do SAPL. Tente novamente mais tarde.");
+    }
 
-         const data = await response.json();
+}
 
-         container.innerHTML = "";
+function renderizarResultados(dados){
 
-         // Se não houver resultados
-         if (!data.results || data.results.length === 0) {
+    const btnAnterior = document.getElementById('btn-anterior');
+    const btnProximo = document.getElementById('btn-proximo');
+    const infoPagina = document.getElementById('info-pagina');
+    const divPaginacao = document.getElementById('controles-paginacao');
+    const container = document.getElementById('lista-sessoes');
 
-             container.innerHTML = `<p style="margin-top:20px;">Nenhuma sessão encontrada para ${ano}.</p>`;
-             btnAnterior.disabled = true;
-             btnProximo.disabled = true;
-             divPaginacao.style.display = "none";
-             return;
-         }
+    container.innerHTML = "";
 
-         // Renderiza sessões
-         data.results.forEach(sessao => {
+    const listaMaterias = dados.results || [];
 
-             const partes = sessao.data_inicio.split('-');
-             const dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
+    if(listaMaterias.length === 0){
 
-             const botaoAta = sessao.upload_ata
-             ? `<a href="${sessao.upload_ata}" target="_blank" class="btn-ata">Baixar Ata (PDF)</a>`
-             : `<span style="color:#777; font-size:0.9em; display:inline-block; margin-top:10px;">(Ata não disponível)</span>`;
+        containerResultados.innerHTML =
+        containerResultados.innerHTML = `<p style="margin-top:20px;">Nenhuma matéria encontrada com esses filtros. Por favor, faça uma nova pesquisa.</p>`;
 
-             const htmlSessao = `
-             <div class="caixa-sessao">
-             <h3>${escaparHTML(sessao.__str__)}</h3>
-             <p><strong>Data:</strong> ${dataFormatada}</p>
-             ${botaoAta}
-             </div>
-             `;
+        divPaginacao.style.display="none";
 
-             container.innerHTML += htmlSessao;
-         });
+        return;
+    }
 
-         // Atualiza paginação com base no backend
-         btnAnterior.disabled = (data.pagination.links.previous === null);
-         btnProximo.disabled = (data.pagination.links.next === null);
+    try{
 
-         btnAnterior.style.opacity = btnAnterior.disabled ? "0.5" : "1";
-         btnProximo.style.opacity = btnProximo.disabled ? "0.5" : "1";
+        dados.results.forEach(sessao => {
 
-         // Mostra número real vindo da API
-         infoPagina.textContent = `Página ${data.pagination.page} de ${data.pagination.total_pages}`;
+        const partes = sessao.data_inicio.split('-');
+        const dataFormatada = `${partes[2]}/${partes[1]}/${partes[0]}`;
 
-         divPaginacao.style.display = "flex";
+        const botaoAta = sessao.upload_ata
+        ? `<a href="${sessao.upload_ata}" target="_blank" class="btn-ata">Baixar Ata (PDF)</a>`
+        : `<span style="color:#777; font-size:0.9em; display:inline-block; margin-top:10px;">(Ata não disponível)</span>`;
 
-     } catch (erro) {
+        const htmlSessao = `
+        <div class="caixa-sessao">
+        <h3>${escaparHTML(sessao.__str__)}</h3>
+        <p><strong>Data:</strong> ${dataFormatada}</p>
+        ${botaoAta}
+        </div>
+        `;
 
-         console.error(erro);
+        container.innerHTML += htmlSessao;
+    });
 
-         container.innerHTML = "<p style='color:red; margin-top:20px;'>Erro ao conectar com o SAPL.</p>";
-         btnAnterior.disabled = true;
-         btnProximo.disabled = true;
-         divPaginacao.style.display = "none";
-     }
- }
+    // Atualiza paginação com base no backend
+    btnAnterior.disabled = (dados.pagination.links.previous === null);
+    btnProximo.disabled = (dados.pagination.links.next === null);
+
+    btnAnterior.style.opacity = btnAnterior.disabled ? "0.5" : "1";
+    btnProximo.style.opacity = btnProximo.disabled ? "0.5" : "1";
+
+    // Mostra número real vindo da API
+    infoPagina.textContent = `Página ${dados.pagination.page} de ${dados.pagination.total_pages}`;
+
+    divPaginacao.style.display = "flex";
+
+    } catch (erro) {
+
+        container.innerHTML = "<p style='color:red; margin-top:20px;'>Erro ao conectar com o SAPL.</p>";
+        divPaginacao.style.display = "none";
+        console.error("Houve um erro ao se conectar com o SAPL", erro);
+    }
+}
