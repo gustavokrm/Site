@@ -487,6 +487,7 @@ footer p {
   }
   
 }
+
 /* Landscape phones and down */
 @media (max-width: 767px) {
     #portal-logo {
@@ -497,20 +498,18 @@ footer p {
     #portal-logo.has-title img {
       display: none;
     }
-
+    
+    
     #main-navigation ul {
       box-sizing: border-box;
       padding: 0;
       padding-right: 0.5em;
       text-align: center;
       float: none;
-      width: 100%;
-      white-space: nowrap;
-      overflow-x: scroll;
+      width: 100%;      
       overflow-y: hidden; 
       -webkit-overflow-scrolling: touch;
     }
-
     #main-navigation ul::after {
       content: '';
       background-image: linear-gradient(to right, transparent, rgba(50,89,167,0.9) 80%);
@@ -525,6 +524,10 @@ footer p {
 
     #main-navigation li {
       float: none;
+      display: block;
+      text-align: left;
+      margin: 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
 
     #main-navigation li a:link {
@@ -544,8 +547,16 @@ footer p {
       max-width: 96%;
       margin: 1.5rem 2%;
     }
+    
+    /* 1. Esconde o menu inicialmente para o slideToggle funcionar */
+    #main-navigation {
+        display: none; 
+        clear: both;
+        width: 100%;
+        background: #3259a7; /* Cor sólida de fundo */
+    }
 
-  }
+}
 
 /* Phones and down */
 @media (max-width: 480px) {
@@ -555,7 +566,7 @@ footer p {
   }       
 }
 
-
+/*CSS das integrações do SAPL*/
 .secao-pauta {
     margin-top: 30px;
     margin-bottom: 15px;
@@ -601,15 +612,24 @@ footer p {
     font-size: 0.9em;
     font-weight: bold;
 }
+
+#lista-sessoes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Centraliza os cards horizontalmente */
+    width: 100%;
+    max-width: 800px;    /* Mesma largura do seu formulário */
+    margin: 0 auto;
+}
             
 .caixa-sessao {
     
+    width: 100%;
     border: 1px solid #ddd;
     border-left: 5px solid #0056b3; /* Faixa azul na esquerda */
     background-color: #f9f9f9;
     padding: 15px;
     margin-bottom: 15px;
-    max-width: 600px;
     margin: 20px 0;
     border-radius: 4px;
     font-family: Arial, sans-serif;
@@ -623,6 +643,7 @@ footer p {
     margin-top: 0;
     color: #333;
 }
+
 .btn-ata {
     display: inline-block;
     margin-top: 10px;
@@ -669,6 +690,10 @@ footer p {
   outline: none;
 }
 
+.caixa-selecao:hover {
+    background-color: ##018ee9;
+}
+
 .botao-pesquisar {
   background-color: #38b6ff;
   display: inline-block;
@@ -706,6 +731,18 @@ body.section-front-page .documentDescription {
 }
 
 /*Banners responsivos*/
+
+@media (max-width: 768px) {
+    .cover-banner-tile.tile-content {
+        display: inline-block !important; /* Permite que fiquem na mesma linha */
+        vertical-align: top;
+        visibility: visible !important;
+        width: 50%; /* Metade da tela */
+        margin: 0; /* Remove o auto para não forçar a quebra de linha */
+        float: left; /* Garante o encaixe lateral */
+    }
+}
+/*
 @media (max-width: 768px) {
     .cover-banner-tile.tile-content {
         display: block !important;
@@ -715,12 +752,132 @@ body.section-front-page .documentDescription {
         margin: 0 auto;
     }
 }
+*/
+
+/*
+.documentFirstHeading, .documentSecondHeading {
+    display: grid;
+    align-items: start;
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 10px;
+}
+.descricao {
+    display: grid;
+    align-items: start;
+    margin: 20px auto;
+    max-width: 800px;
+}*/
+
+
+/* Container principal da pesquisa */
+.pesquisa-materias {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas */
+    gap: 20px;
+    align-items: start; /* Alterado de 'center' para 'start' para alinhar os topos */
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* NOVO: A caixinha que agrupa a label e o input */
+.grupo-campo {
+    display: flex;
+    flex-direction: column; /* Coloca a label em cima e o campo embaixo */
+    gap: 5px; /* Dá um espacinho de respiro entre a label e o campo */
+}
+
+.grupo-campo label {
+    font-weight: bold; /* Deixa as labels em negrito (opcional, mas fica bom) */
+    color: #333;
+}
+
+/* Campos de pesquisa e dropdowns */
+.selecao-tipo, .selecao-ano, .selecao-numero, .selecao-autor, .pesquisar-expressoes {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
+    min-width: 150px;
+}
+
+.selecao-tipo, .selecao-ano, .selecao-autor {
+    cursor: pointer;
+}
+
+.pesquisar-expressoes, .selecao-numero {
+    cursor: text;
+}
+
+.acoes-pesquisa {
+    grid-column:  1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Botão de limpar os campos */
+.botao-limpar {
+
+    padding: 10px 15px;
+    background-color: #e0e0e0;
+    color: black;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+}
+
+.botao-limpar:hover {
+    background-color: #ccc;
+}
+
+#controles-paginacao {
+    display: flex;
+    justify-content: center; /* Centraliza os botões e o texto da página */
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin: 30px auto;       /* Centraliza e dá espaço do conteúdo acima */
+}
+
+.btn-baixar {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #2795F5; 
+    color: white;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.btn-baixar:hover {
+    background-color: #074F8F;
+    color: white;
+}
+
+.cover-banner-tile {
+    transition: transform 0.3s ease-out;
+}
+
+.cover-banner-tile:hover {
+    transform: scale(1.2);
+       
+}
+
 /*Menus dropdown*/
+
 #main-navigation {
     background: #0b3d6d; /* azul institucional refinado */
     padding: 20px; /* aumenta a largura do menu*/
-}
-
+}   
+  
 #main-navigation > ul > li > a {
     color: #ffffff !important;
     font-weight: 600;
@@ -737,7 +894,7 @@ body.section-front-page .documentDescription {
 }
 
 #main-navigation ul ul {
-   background: #ffffff;
+    background: #ffffff;
     border-radius: 8px;
     box-shadow: 0 15px 30px rgba(0,0,0,0.15);
 }
@@ -748,17 +905,17 @@ body.section-front-page .documentDescription {
     font-size: 16px;
     color: #333 !important;
     font-weight: 500;
-    
+
 }
 
 #main-navigation ul ul li a:hover {
     color: #0b3d6d !important;
+    background-color: #f0f0f0;
 }
 
 #main-navigation ul ul {
-    min-width: 500px;           /* largura maior */
+    min-width: 200px;           /* largura maior */
     padding: 20px;
-    display: none
 }
 
 #main-navigation ul ul li {
@@ -768,17 +925,17 @@ body.section-front-page .documentDescription {
     transition: 0.2s ease;
 }
 
-#main-navigation: ul ul li:hover {
+/*#main-navigation ul ul li:hover {
     background-color: navy;
     color: black;
-}
+}*/
 
 #main-navigation ul ul li:last-child {
     border-bottom: none;
 }
 
 #main-navigation li:hover > ul {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;  /* duas colunas */
-    gap: 8px 40px;                   /* espaçamento vertical e horizontal */
+    display: block;
+    column-count: 2;
+    gap: 8px 20px;                   /* espaçamento vertical e horizontal */
 }

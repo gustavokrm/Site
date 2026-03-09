@@ -144,8 +144,7 @@ async function pesquisaMateria(anoPesquisado, paginaAtual) {
     const numero = document.getElementById('numero-materia').value.trim();
     const autor = document.getElementById('autor-materia').value;
     const expressoes = document.getElementById('pesquisar-expressoes').value.trim();
-    const pagesize = 5;
-
+    const pagesize = 4;
 
     // 2. Validação dos campos obrigatórios
     // Se "tipo" OU "ano" estiverem vazios, dispara o alerta e para a execução

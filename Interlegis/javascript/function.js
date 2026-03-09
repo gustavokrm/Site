@@ -6,13 +6,24 @@ $(document).ready(function() {
     $("header").append("<div class='menu-button'><button><span class='hiddenStructure'>Mostrar ou Ocultar Menu</span><i class='icon-reorder'></i></button></div>");
 
     //Show menu on mobile menu button click
+    /*
     $(".menu-button button").on( "click", function() {
         $(this).toggleClass("menuAtivo");
         $portletItem.slideUp(200);
         $portletHeader.removeClass("menuAtivo");
         $("#column-one").slideToggle();
 
+    });*/
+    
+    // Substitua o bloco do clique por este:
+    $(".menu-button button").on("click", function() {
+        $(this).toggleClass("menuAtivo");
+        // Em vez de #column-one, vamos abrir o navigation
+        $("#main-navigation").slideToggle(); 
+        // Se quiser manter o comportamento da coluna um:
+        // $("#column-one").slideToggle(); 
     });
+    
     //Collapse menu according to screen size
     $(window).resize(function() {
         if ($(window).width() < 753) {

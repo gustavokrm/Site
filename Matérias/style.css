@@ -97,7 +97,7 @@
     background-color: #074F8F;
 }
 
-#lista-materias {
+#lista-sessoes {
     display: flex;
     flex-direction: column;
     align-items: center; /* Centraliza os cards horizontalmente */
@@ -122,7 +122,7 @@ margin: 30px auto;       /* Centraliza e dá espaço do conteúdo acima */
 
     width: 100%;
     border: 1px solid #ddd;
-    border-left: 5px solid #0056b3; /* Faixa azul na esquerda */
+    border-left: 5px solid #0056b3;
     background-color: #f9f9f9;
     padding: 15px;
     margin-bottom: 15px;
@@ -145,7 +145,7 @@ margin: 30px auto;       /* Centraliza e dá espaço do conteúdo acima */
     display: inline-block;
     margin-top: 10px;
     padding: 8px 15px;
-    background-color: #2795F5; /* Vermelho PDF */
+    background-color: #2795F5;
     color: white;
     text-decoration: none;
     border-radius: 4px;
