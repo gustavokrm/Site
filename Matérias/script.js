@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () =>{
         document.getElementById('pesquisar-expressoes').value = "";
 
         // limpa os resultados da tela
-        document.getElementById('lista-materias').innerHTML = "";
+        document.getElementById('lista-sessoes').innerHTML = "";
         document.getElementById('controles-paginacao').innerHTML = "";
     });
 
