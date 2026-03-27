@@ -94,8 +94,7 @@ async function carregarAutor() {
 function carregarSessoes(ano, pagina) {
     const listaSessoes = document.getElementById("lista-sessoes");
     const idAutorSelecionado = document.getElementById('selecao-autor').value;
-
-    // A URL volta a ser "genérica" para o ano, sem o parâmetro de autor que não funcionava
+    
     let url = `https://sapl.tapira.mg.leg.br/api/materia/tramitacao/?status=43&materia__tipo=1&page=${pagina}&page_size=50`;
 
     if (ano && ano !== "") {
@@ -108,6 +107,11 @@ function carregarSessoes(ano, pagina) {
     .then(response => response.json())
     .then(data => {
         // Se houver um autor selecionado, filtramos o array 'results' antes de renderizar
+        if(!ano) {
+            alert("Favor selecionar um ano antes de pesquisar!");
+            return;
+        }
+        
         if (idAutorSelecionado && idAutorSelecionado !== "") {
             const resultadosFiltrados = data.results.filter(sessao => {
                 // Verificamos se dentro da lista de autores da matéria existe o ID selecionado
