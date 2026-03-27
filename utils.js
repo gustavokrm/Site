@@ -1,7 +1,4 @@
-var Site = Site || {};
-
-
-Site.carregarAno() = function() {
+Site.carregarAno = function() {
 
     var anos = document.getElementById('selecao-ano');
     var anoAtual = new Date().getFullYear();
@@ -27,11 +24,10 @@ Site.limparFormulario = function(){
     console.log("Campos limpos");
 };
 
-Site.carregarNomeAutor = function(){
+export function carregarAutor() {
 
-    let idAutor = "";
     const selectAutor = document.getElementById('selecao-autor');
-    let urlAutor = `https://sapl.tapira.mg.leg.br/api/base/autor/${idAutor}?tipo=2`;
+    let urlAutor = `https://sapl.tapira.mg.leg.br/api/base/autor/?tipo=2`;
     let todosAutores = [];
 
     try {

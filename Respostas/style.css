@@ -1,0 +1,157 @@
+.documentFirstHeading, .documentSecondHeading {
+    display: grid;
+    align-items: start;
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 10px;
+}
+
+.descricao {
+    display: grid;
+    align-items: start;
+    margin: 20px auto;
+    max-width: 800px;
+}
+
+/* Container principal da pesquisa */
+.pesquisa-materias {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas */
+    gap: 20px;
+    align-items: start; /* Alterado de 'center' para 'start' para alinhar os topos */
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* NOVO: A caixinha que agrupa a label e o input */
+.grupo-campo {
+    display: flex;
+    flex-direction: column; /* Coloca a label em cima e o campo embaixo */
+    gap: 5px; /* Dá um espacinho de respiro entre a label e o campo */
+}
+
+.grupo-campo label {
+    font-weight: bold; /* Deixa as labels em negrito (opcional, mas fica bom) */
+    color: #333;
+}
+
+/* Campos de pesquisa e dropdowns */
+.selecao-tipo, .selecao-ano, .selecao-numero, .selecao-autor, .pesquisar-expressoes {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    color: #333;
+    min-width: 150px;
+}
+
+.selecao-tipo, .selecao-ano, .selecao-autor {
+    cursor: pointer;
+}
+
+.pesquisar-expressoes, .selecao-numero {
+    cursor: text;
+}
+
+.acoes-pesquisa {
+    grid-column:  1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Botão de limpar os campos */
+.botao-limpar {
+
+    padding: 10px 15px;
+    background-color: #e0e0e0;
+    color: black;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+}
+
+.botao-limpar:hover {
+    background-color: #ccc;
+}
+
+/* Botão de pesquisar */
+.botao-pesquisar {
+
+    padding: 10px 15px;
+    background-color: #27A9F5;
+    color: white;
+    border-radius: 1px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background 0.3s;
+}
+
+.botao-pesquisar:hover {
+    background-color: #074F8F;
+}
+
+#lista-sessoes {
+display: flex;
+flex-direction: column;
+align-items: center; /* Centraliza os cards horizontalmente */
+width: 100%;
+max-width: 800px;    /* Mesma largura do seu formulário */
+margin: 0 auto;
+}
+
+#controles-paginacao {
+display: flex;
+justify-content: center; /* Centraliza os botões e o texto da página */
+align-items: center;
+gap: 20px;
+width: 100%;
+max-width: 800px;
+margin: 30px auto;       /* Centraliza e dá espaço do conteúdo acima */
+}
+
+/*cards de resposta -- Remover ao subir para o site*/
+
+.caixa-sessao {
+
+    width: 100%;
+    border: 1px solid #ddd;
+    border-left: 5px solid #0056b3;
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 15px;
+    max-width: 600px;
+    margin: 20px 0;
+    border-radius: 4px;
+    font-family: Arial, sans-serif;
+}
+
+.caixa-sessao:hover{
+    transform: scale(1.0);
+}
+
+.caixa-sessao h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.btn-baixar {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #2795F5;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.btn-baixar:hover {
+    background-color: #074F8F;
+    color: white;
+}
