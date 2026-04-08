@@ -6,10 +6,9 @@ Essa iniciativa nasceu de um desejo de integrar o site com o SAPL, de forma que 
 Portal Modelo, Plone, Zope.
 
 # Como instalar:
-Os arquivos .js devem ser adicionados ao Portal Modelo através da interface de tema, na pasta de javascript. Os scripts relevantes já estão no pacote.
-Criar "page templates" no ZMI referentes a cada script, como, por exemplo, um page template para ver as atas etc. e referenciar os scripts nesse page template. Ao criar a página, ela já fica online. 
-
+Baixe o tema e instale-o na sua interface de tema nas configurações.
 Mude os scripts para referenciar sua casa legislativa.
+Os page templates que são usados já estão no tema, mas devem ser criados através do /manage, ou interface de gerência do Zope, em portal_skins > custom.
 
 Modelo de HTML de um page template:
 
