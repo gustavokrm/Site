@@ -707,7 +707,8 @@ a.btn-ata, a.btn-baixar {
 }
 
 .caixa-selecao {
-
+  
+  display: block; /*Corrige o espaçamento dos seletores na página de respostas de indicações*/
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;
