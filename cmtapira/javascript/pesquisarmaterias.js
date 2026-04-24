@@ -42,9 +42,9 @@ document.addEventListener('DOMContentLoaded', () =>{
     document.getElementById('btn-limpar').addEventListener('click', () => {
         // limpa todos os campos
         document.getElementById('tipo-materia').value = "";
-        document.getElementById('ano-materia').value = "";
+        document.getElementById('selecao-ano').value = "";
         document.getElementById('numero-materia').value = "";
-        document.getElementById('autor-materia').value = "";
+        document.getElementById('selecao-autor').value = "";
         document.getElementById('pesquisar-expressoes').value = "";
 
         // limpa os resultados da tela
