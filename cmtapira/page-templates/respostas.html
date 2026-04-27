@@ -7,20 +7,20 @@
         <script type="module" tal:attributes="src string:${portal_url}/++theme++cmtapira/javascript/respostas.js"></script>        
     
   <h1>Respostas de indicações</h1>
-    <p>Respostas das indicações feitas pelos vereadores à Prefeitura.
-    Selecione o autor e o ano da indicação para visualizar as respostas.</p>
-    <p style="color: red;">Os campos marcados com * são obrigatórios</p>
+   <p>Respostas das indicações feitas pelos vereadores à Prefeitura.<br>
+    Selecione o autor e o ano da indicação para visualizar as respostas.<br>
+    <p style="color: red;"><strong>Os campos marcados com * são obrigatórios</strong></p>
 
     <div id="pesquisa-autor">
         <label for="autor">*Autor:</label>
-        <select id="selecao-autor">
+        <select id="selecao-autor" class="caixa-selecao" title="Selecione o vereador que fez a indicação">
             <option value="">Selecione o autor</option>
         </select>
     </div>
 
     <div id="pesquisa-ano">
         <label for="ano">*Ano:</label>
-        <select id="selecao-ano">
+        <select id="selecao-ano" class="caixa-selecao" title="Selecione o ano em que o vereador fez a indicação">
             <option value="">Selecione o ano</option>
             <option value="2026">2026</option>
             <option value="2025">2025</option>
@@ -28,8 +28,8 @@
     </div>
 
     <div class="acoes-pesquisa">
-        <button type="button" id="btn-limpar" class="botao-limpar">Limpar</button>
-        <button type="button" id="btn-pesquisar" class="botao-pesquisar">Pesquisar</button>
+        <button type="button" id="btn-limpar" class="botao-limpar" title="Limpa todos os campos para fazer uma nova pesquisa">Limpar</button>
+        <button type="button" id="btn-pesquisar" class="botao-pesquisar" title="Pesquisa as respostas de indicações do vereador escolhido">Pesquisar</button>
 
     </div>
 
