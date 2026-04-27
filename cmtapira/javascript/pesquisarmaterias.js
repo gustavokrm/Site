@@ -47,9 +47,19 @@ document.addEventListener('DOMContentLoaded', () =>{
         document.getElementById('selecao-autor').value = "";
         document.getElementById('pesquisar-expressoes').value = "";
 
-        // limpa os resultados da tela
+        // limpa os cards da tela
         document.getElementById('lista-sessoes').innerHTML = "";
-        document.getElementById('controles-paginacao').innerHTML = "";
+        
+        // modifica a visualização do div de paginacao para nenhum, ou seja
+        // esconde o div em vez de destruir os controles de paginação
+        const divPaginacao = document.getElementById('controles-paginacao');
+        divPaginacao.style.display = "none";
+        
+        const infoPagina = document.getElementById('info-pagina');
+        if (infoPagina) infoPagina.textContent = "";
+        
+        // reseta a página atual para 1, apenas para evitar acessar uma página inexistente
+        paginaAtual = 1;
     });
 
 });
