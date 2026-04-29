@@ -1,4 +1,4 @@
-import { formatarDataBR, carregarAutor, carregarAno, pegarNomeDoAutor } from './utils.js';
+import { formatarDataBR, carregarAutor, carregarAno, pegarNomeDoAutor, forceHttps } from './utils.js';
 
 let paginaAtual = 1;
 
@@ -47,19 +47,20 @@ document.addEventListener('DOMContentLoaded', () =>{
         document.getElementById('selecao-autor').value = "";
         document.getElementById('pesquisar-expressoes').value = "";
 
-        // limpa os cards da tela
+        // limpa os resultados da tela
+        
         document.getElementById('lista-sessoes').innerHTML = "";
         
-        // modifica a visualização do div de paginacao para nenhum, ou seja
-        // esconde o div em vez de destruir os controles de paginação
         const divPaginacao = document.getElementById('controles-paginacao');
         divPaginacao.style.display = "none";
         
         const infoPagina = document.getElementById('info-pagina');
         if (infoPagina) infoPagina.textContent = "";
         
-        // reseta a página atual para 1, apenas para evitar acessar uma página inexistente
         paginaAtual = 1;
+        
+        //
+        //document.getElementById('controles-paginacao').innerHTML = "";
     });
 
 });
@@ -170,6 +171,39 @@ async function pesquisaMateria(anoPesquisado, paginaAtual) {
                 indicacao.nomeAutorReal = "Sem autor";
             }
         }
+        
+        for (const tramita of materias){
+            const idMateria = tramita.id;
+            if(idMateria){
+                const dadosRecentes = await tramitacao(idMateria);
+                
+                if(dadosRecentes) {
+                    const textoStatus = dadosRecentes.__str__ || "";
+                    const partes = textoStatus.split('|');
+                    
+                    if(partes.length >=3){
+                        const statusTexto = partes[1].trim();
+                        const dataTramitacao = partes[2].trim();
+                        
+                        tramita.status = `${statusTexto} - ${dataTramitacao}`;
+                    } else {
+                        tramita.status = dadosRecentes.__str__;
+                    }
+                    tramita.texto_completo = dadosRecentes.texto || "Sem texto informativo";
+                    tramita.data_atualização = dadosRecentes.data_tramitacao;
+                    /*
+                    tramita.status = dadosRecentes.__str__;
+                    tramita.texto_completo = dadosRecentes.texto;
+                    tramita.data_atualizacao = dadosRecentes.data_tramitacao;
+                    */
+                } else {
+                    tramita.status = "Sem tramitação";
+                }
+            } else {
+                console.log("Não foi possível encontrar os dados");
+            } 
+            
+        }
 
         // 5. Enviar os dados para a função que vai desenhar os cards na tela
         renderizarResultados(dados);
@@ -177,6 +211,29 @@ async function pesquisaMateria(anoPesquisado, paginaAtual) {
     } catch (erro) {
         console.error("Falha ao buscar matérias:", erro);
         alert("Houve um erro ao buscar os dados do SAPL. Tente novamente mais tarde.");
+    }
+}
+
+// Função para capturar os dados de tramitação das matérias pesquisadas.
+async function tramitacao(idMateria) {
+    const baseURL = `https://sapl.tapira.mg.leg.br/api/materia/tramitacao/`;
+    const urlStatus = `${baseURL}?materia=${idMateria}`;
+    
+    if (!idMateria) return null;
+
+    try {
+        const response = await fetch(forceHttps(urlStatus));
+        const data = await response.json();
+        const lista = data.results || data;
+
+        if (Array.isArray(lista) && lista.length > 0) {
+            // Ordena pela data para garantir que o índice [0] seja o mais recente
+            return lista.sort((a, b) => new Date(b.data_tramitacao) - new Date(a.data_tramitacao))[0];
+        }
+        return null;
+    } catch (erro) {
+        console.error("Erro ao buscar tramitação:", erro);
+        return null;
     }
 }
 
@@ -218,6 +275,8 @@ function renderizarResultados(dados) {
             <p><strong>Ementa:</strong> ${materia.ementa || 'Sem ementa disponível'}</p>
             <p><strong>Data de Apresentação:</strong> ${dataFormatada} </p>
             <p><strong>Autor:</strong> ${materia.nomeAutorReal}</p>
+            <p><strong>Status de tramitação: ${materia.status}</strong></p>
+            <p><strong>Texto da ação: ${materia.texto_completo}</strong></p>
             ${baixarMateria}
             </div>
             `;
