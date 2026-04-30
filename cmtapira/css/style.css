@@ -666,7 +666,8 @@ footer p {
     color: #333;
 }
 
-.btn-ata, .btn-baixar, .btn-detalhes {
+
+.btn-ata, .btn-baixar {
     display: inline-block;
     margin-top: 10px;
     padding: 8px 15px;
@@ -675,6 +676,41 @@ footer p {
     text-decoration: none;
     border-radius: 4px;
     font-weight: bold;
+}
+
+.btn-detalhes {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #1F5A78;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;    
+}
+
+.btn-indisponivel {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #828B8F;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;    
+}
+
+.btn-anexos {
+    
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #99BDD1;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;  
+    
 }
 
 .btn-ata:hover {
@@ -691,7 +727,6 @@ footer p {
     background-color: #61baed;
     color: white;
 }
-
 
 a.btn-ata, a.btn-baixar, a.btn-detalhes {
     color: white !important;
@@ -712,8 +747,8 @@ a.btn-ata, a.btn-baixar, a.btn-detalhes {
 }
 
 .caixa-selecao {
-  
-  display: block; /*Corrige o espaçamento dos seletores na página de respostas de indicações*/
+
+  display: block;
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 4px;

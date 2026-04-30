@@ -309,14 +309,14 @@ function renderizarResultados(dados) {
                     if (isUrlValida) {
                         const nomeDoc = urlArquivo.split('/').pop();
                         documentosHTML += `
-                            <a href="${urlArquivo}" target="_blank" class="btn-detalhes" title="Documentos anexados" style="margin-right:10px;">
+                            <a href="${urlArquivo}" target="_blank" class="btn-anexos" title="Documentos anexados" style="margin-right:10px;">
                                 📎 Baixar Anexo ${index + 1}
                             </a>`;
                     }
                 });
                 
                 if (!documentosHTML) {
-                    documentosHTML = `<span style="color:#777; font-size:0.9em; display:inline-block;
+                    documentosHTML = `<span class="btn-indisponivel" style="color:#777; font-size:0.9em; display:inline-block;
                 margin-top:10px;">(Documento acessório não disponível)</span>`;
                 }
             } else {
