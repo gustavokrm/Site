@@ -1,15 +1,14 @@
-import { formatarDataBR, carregarAutor, carregarAno, pegarNomeDoAutor, forceHttps } from './utils.js';
-
+// Configuração da URL do seu servidor Python (FastAPI)
+const URL_BACKEND = 'https://pesquisasapl.fastapicloud.dev/api/materias';
 let paginaAtual = 1;
 
-document.addEventListener('DOMContentLoaded', () =>{
-
+document.addEventListener('DOMContentLoaded', () => {
     const selectAno = document.getElementById('selecao-ano');
-    const selectTipo = document.getElementById('tipo-materia');
     const anoAtual = new Date().getFullYear();
     const anoInicial = 2021;
 
-    for (let ano = anoAtual; ano >= anoInicial; ano --){
+    // Popula o select de anos dinamicamente
+    for (let ano = anoAtual; ano >= anoInicial; ano--) {
         const novaOpcao = document.createElement('option');
         novaOpcao.value = ano;
         novaOpcao.textContent = ano;
@@ -19,76 +18,63 @@ document.addEventListener('DOMContentLoaded', () =>{
     selectAno.value = "";
     let anoPesquisado = anoAtual;
 
+    // Inicializa os seletores buscando os dados do seu backend Python
     carregarTiposMateria();
     carregarAutor();
 
+    // Eventos dos botões
     document.getElementById('btn-pesquisar').addEventListener('click', () => {
         paginaAtual = 1;
-        pesquisaMateria(anoPesquisado, paginaAtual);
+        pesquisaMateria(paginaAtual);
     });
 
     document.getElementById('btn-proximo').addEventListener('click', () => {
         paginaAtual++;
-        pesquisaMateria(anoPesquisado, paginaAtual);
+        pesquisaMateria(paginaAtual);
     });
 
     document.getElementById('btn-anterior').addEventListener('click', () => {
-        if(paginaAtual > 1){
+        if (paginaAtual > 1) {
             paginaAtual--;
-            pesquisaMateria(anoPesquisado, paginaAtual);
+            pesquisaMateria(paginaAtual);
         }
     });
 
     document.getElementById('btn-limpar').addEventListener('click', () => {
-        // limpa todos os campos
+        // Limpa todos os campos
         document.getElementById('tipo-materia').value = "";
         document.getElementById('selecao-ano').value = "";
         document.getElementById('numero-materia').value = "";
         document.getElementById('selecao-autor').value = "";
         document.getElementById('pesquisar-expressoes').value = "";
 
-        // limpa os resultados da tela
-        
+        // Limpa os resultados e paginação da tela
         document.getElementById('lista-sessoes').innerHTML = "";
-        
-        const divPaginacao = document.getElementById('controles-paginacao');
-        divPaginacao.style.display = "none";
+        document.getElementById('controles-paginacao').style.display = "none";
         
         const infoPagina = document.getElementById('info-pagina');
-        if (infoPagina) infoPagina.textContent = "";
+        if (infoPagina) infoPagina.textContent = "Página 1";
         
         paginaAtual = 1;
-        
-        //
-        //document.getElementById('controles-paginacao').innerHTML = "";
     });
-
 });
 
-async function carregarTiposMateria(){
-
+// Busca os tipos de matéria da API externa (pode continuar direto ou migrar para o Python depois)
+async function carregarTiposMateria() {
     const selectTipo = document.getElementById('tipo-materia');
     let urlTiposSapl = 'https://sapl.tapira.mg.leg.br/api/materia/tipomaterialegislativa';
     let todosTipos = [];
 
     try {
-    
         let contador = 0;
-        
-        while (urlTiposSapl && contador <2){
-        
-            const resposta = await fetch(forceHttps(urlTiposSapl));
-            if(!resposta.ok){
-                throw new Error(`Erro ao carregar tipos de matéria: ${resposta.status}`);
-            }
-    
-            const dados = await resposta.json();
-            const listaTipos = dados.results || [];
+        while (urlTiposSapl && contador < 2) {
+            const resposta = await fetch(urlTiposSapl.replace(/^http:/, 'https:'));
+            if (!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
             
-            todosTipos = todosTipos.concat(listaTipos);
+            const dados = await resposta.json();
+            todosTipos = todosTipos.concat(dados.results || []);
             urlTiposSapl = dados.pagination && dados.pagination.links ? dados.pagination.links.next : null;
             contador++;
-            
         }
 
         todosTipos.forEach(tipo => {
@@ -97,269 +83,180 @@ async function carregarTiposMateria(){
             opcaoHTML.textContent = tipo.descricao || tipo.nome;
             selectTipo.appendChild(opcaoHTML);
         });
-
-    } catch(erro){
+    } catch (erro) {
         console.error("Falha ao carregar os tipos de matéria:", erro);
-
     }
 }
 
-export async function pesquisaMateria(anoPesquisado, paginaAtual) {
+// Otimizado: Busca a lista de autores consolidada do seu backend Python
+async function carregarAutor() {
+    const selectAutor = document.getElementById('selecao-autor');
+    try {
+        const resposta = await fetch(`${URL_BACKEND}/autores`);
+        if (!resposta.ok) throw new Error("Erro ao buscar autores do servidor local.");
 
-    // 1. Capturar os valores digitados/selecionados pelo usuário
+        const todosAutores = await resposta.json();
+
+        todosAutores.forEach(autor => {
+            const opcaoHTML = document.createElement('option');
+            opcaoHTML.value = autor.id;
+            opcaoHTML.textContent = autor.nome;
+            selectAutor.appendChild(opcaoHTML);
+        });
+    } catch (erro) {
+        console.error("Falha ao carregar os autores no seletor:", erro);
+    }
+}
+
+// Otimizado: Faz uma ÚNICA chamada para o Python trazendo tudo pronto
+async function pesquisaMateria(pagina) {
     const tipo = document.getElementById('tipo-materia').value.trim();
     const ano = document.getElementById('selecao-ano').value.trim();
     const numero = document.getElementById('numero-materia').value.trim();
     const autor = document.getElementById('selecao-autor').value;
     const expressoes = document.getElementById('pesquisar-expressoes').value.trim();
-    const pagesize = 5;
 
-
-    // 2. Validação dos campos obrigatórios
-    // Se "tipo" OU "ano" estiverem vazios, dispara o alerta e para a execução
     if (!tipo || !ano) {
         alert("Por favor, preencha os campos obrigatórios: Tipo e Ano.");
-        return; // O 'return' faz o script parar de rodar aqui
+        return;
     }
 
-    // 3. Montar a URL dinamicamente com os parâmetros
-    const baseUrl = 'https://sapl.tapira.mg.leg.br/api/materia/materialegislativa/';
-    const params = new URLSearchParams();
+    // Monta os parâmetros para a URL do seu backend local
+    const params = new URLSearchParams({
+        tipo: tipo,
+        ano: ano,
+        page: pagina
+    });
 
-    // Adiciona os campos obrigatórios na busca
-    params.append('tipo', tipo);
-    params.append('ano', ano);
-    params.append('page', paginaAtual);
-    params.append('page_size', pagesize);
-    params.append('o', '-numero');
+    if (numero) params.append('numero', numero);
+    if (autor) params.append('autor', autor);
+    if (expressoes) params.append('expressoes', expressoes);
 
-    // Adiciona os campos opcionais APENAS se o usuário digitou algo
-    if (numero) {
-        params.append('numero', numero);
-    }
-    if (autor) {
-        params.append('autores', autor); // Verifique se o nome exato na API é 'autor' ou 'autoria'
-    }
-    if (expressoes) {
-        params.append('ementa__icontains', expressoes);
-    }
-
-
-    const urlCompleta = `${baseUrl}?${params.toString()}`;
-
-    // 4. Fazer a requisição na API
     try {
+        const containerResultados = document.getElementById('lista-sessoes');
+        containerResultados.innerHTML = '<p style="margin-top:20px;">Buscando dados...</p>';
 
-        console.log("Buscando dados em:", urlCompleta);
-
-        const resposta = await fetch(urlCompleta);
-
-        if (!resposta.ok) {
-            throw new Error(`Erro na comunicação com o SAPL: ${resposta.status}`);
-        }
-
+        const resposta = await fetch(`${URL_BACKEND}/pesquisar?${params.toString()}`);
+        if (!resposta.ok) throw new Error("Erro na comunicação com o servidor Python.");
+       
         const dados = await resposta.json();
-
-        // APIs do SAPL geralmente retornam os dados paginados dentro de um array chamado "results"
-        const materias = dados.results || dados;
-
-        // loop para incluir o nome dos autores em cada card
-        for (const indicacao of materias){
-            const idAutor = indicacao.autores[0];
-            if (idAutor){
-                indicacao.nomeAutorReal = await pegarNomeDoAutor(idAutor);
-            } else {
-                indicacao.nomeAutorReal = "Sem autor";
-            }
-        }
         
-        // loop para incluir o status de tramitação de cada card
-        // todo melhorar esse código
-        for (const tramita of materias){
-            const idMateria = tramita.id;
-
-            if(idMateria){
-                const dadosRecentes = await tramitacao(idMateria);
-                const doc = await documentos(idMateria);
-
-                // Armazena TODOS os documentos acessórios (sempre, independente da tramitação)
-                tramita.documentos_accessorios = doc ? doc : [];
-                
-                if(dadosRecentes) {
-                    const textoStatus = dadosRecentes.__str__ || "";
-                    const partes = textoStatus.split('|');
-                    
-                    if(partes.length >=3){
-                        const statusTexto = partes[1].trim();
-                        const dataTramitacao = partes[2].trim();
-                                
-                        tramita.status = `${statusTexto} - ${dataTramitacao}`;
-                    } else {
-                        tramita.status = dadosRecentes.__str__;
-                    }
-                    tramita.texto_completo = dadosRecentes.texto || "Sem texto informativo";
-                    tramita.data_atualização = dadosRecentes.data_tramitacao;
-                    
-                } else {
-                    tramita.status = "Sem tramitação";
-                }
-            } else {
-                console.log("Não foi possível encontrar os dados");
-            } 
-            
-        }
-              
-        // 5. Enviar os dados para a função que vai desenhar os cards na tela
+        // Renderiza os resultados recebidos
         renderizarResultados(dados);
 
     } catch (erro) {
         console.error("Falha ao buscar matérias:", erro);
-        alert("Houve um erro ao buscar os dados do SAPL. Tente novamente mais tarde.");
+        alert("Houve um erro ao buscar os dados. Tente novamente mais tarde.");
     }
 }
 
-// Função para capturar os dados de tramitação das matérias pesquisadas.
-export async function tramitacao(idMateria) {
-    const baseURL = `https://sapl.tapira.mg.leg.br/api/materia/tramitacao/`;
-    const urlStatus = `${baseURL}?materia=${idMateria}`;
-    
-    if (!idMateria) return null;
-
-    try {
-        const response = await fetch(forceHttps(urlStatus));
-        const data = await response.json();
-        const lista = data.results || data;
-
-        if (Array.isArray(lista) && lista.length > 0) {
-            // Ordena pela data para garantir que o índice [0] seja o mais recente
-            return lista.sort((a, b) => new Date(b.data_tramitacao) - new Date(a.data_tramitacao))[0];
-        }
-        return null;
-    } catch (erro) {
-        console.error("Erro ao buscar tramitação:", erro);
-        return null;
-    }
-}
-
-// função para capturar os dados dos documentos acessórios anexos ao projeto
-export async function documentos(idMateria) {
-    const baseURL = `https://sapl.tapira.mg.leg.br/api/materia/documentoacessorio/`;
-    const urlDocumentos = `${baseURL}?materia=${idMateria}`;
-    
-    if (!idMateria) return null;
-
-    try {
-        const response = await fetch(forceHttps(urlDocumentos));
-        const data = await response.json();
-        const lista = data.results || data;
-
-        if (Array.isArray(lista) && lista.length > 0) {
-            // Retorna TODOS os documentos (não apenas o primeiro)
-            return lista;
-        }
-        return null;
-    } catch (erro) {
-        console.error("Erro ao buscar documentos acessórios:", erro);
-        return null;
-    }
-}
-
-// Função para desenhar o HTML
+// Função para desenhar o HTML na tela com base nos dados mastigados pelo Python
 function renderizarResultados(dados) {
-
     const btnAnterior = document.getElementById('btn-anterior');
     const btnProximo = document.getElementById('btn-proximo');
     const infoPagina = document.getElementById('info-pagina');
     const divPaginacao = document.getElementById('controles-paginacao');
     const containerResultados = document.getElementById('lista-sessoes');
-    const baseURL = 'https://sapl.tapira.mg.leg.br';
-    containerResultados.innerHTML = ''; // Limpa os resultados da busca anterior
-
+    
+    containerResultados.innerHTML = ''; // Limpa a busca anterior
     const listaMaterias = dados.results || [];
 
-        if (listaMaterias.length === 0) {
-
-            containerResultados.innerHTML = `<p style="margin-top:20px;">Nenhuma matéria encontrada com esses filtros. Por favor, faça uma nova pesquisa.</p>`;
-
-            divPaginacao.style.display="none";
-
-            return;
-        }
-        try{
-            listaMaterias.forEach(materia => {
-            // Monta o HTML do card (.caixa-sessao)
-
-            const dataFormatada = formatarDataBR(materia.data_apresentacao);
-
-            const baixarMateria = materia.texto_original
-            ? `<a title="Baixe a matéria em PDF" href="${materia.texto_original}" target="_blank" class="btn-baixar">Baixar Matéria (PDF)</a>`
-            : `<span style="color:#777; font-size:0.9em; display:inline-block;
-            margin-top:10px;">(Matéria não disponível)</span>`;
-
-            // Monta os links para TODOS os documentos acessórios
-            let documentosHTML = '';
-            const docs = materia.documentos_accessorios || [];
-            
-            if (docs.length > 0) {
-                docs.forEach((doc, index) => {
-                    // Verifica se o arquivo é uma URL HTTP válida
-                    const urlArquivo = doc.arquivo;
-                    const isUrlValida = urlArquivo && urlArquivo.startsWith('http');
-                    
-                    if (isUrlValida) {
-                        const nomeDoc = urlArquivo.split('/').pop();
-                        documentosHTML += `
-                            <a title="Documentos anexados à matéria." href="${urlArquivo}" target="_blank" class="btn-anexos" title="Documentos anexados" style="margin-right:10px;">
-                                📎 Baixar Anexo ${index + 1}
-                            </a>`;
-                    }
-                });
-                
-                if (!documentosHTML) {
-                    documentosHTML = `<span class="btn-indisponivel" title="Não foi anexado nenhum documento a essa matéria" style="color:#777; font-size:0.9em; display:inline-block;
-                margin-top:10px;">(Documento acessório não disponível)</span>`;
-                }
-            } else {
-                documentosHTML = `<span class="btn-indisponivel" title="Não foi anexado nenhum documento a essa matéria" style="color:#777; font-size:0.9em; display:inline-block;
-            margin-top:10px;">(Documento acessório não disponível)</span>`;
-            }
-           
-            const cardHTML = `
-            <div class="caixa-sessao">
-            <h3>${materia.__str__ || 'Matéria sem título'}</a></h3>
-            <p title="Qual o assunto da matéria"><strong>Ementa:</strong> ${materia.ementa || 'Sem ementa disponível'}</p>
-            <p title="Quando a matéria foi apresentada em plenário"><strong>Data de Apresentação:</strong> ${dataFormatada} </p>
-            <p title="Quem é o vereador que a criou"><strong>Autor:</strong> ${materia.nomeAutorReal}</p>
-            <p title="Qual o estado atual da matéria? A tramitação começa no plenário, mas estende-se até a Prefeitura, quando ela é analisada, assinada pelo(a) Prefeito(a) e transformada em lei, ou respondida, no caso das indicações"><strong>Status de tramitação:</strong> ${materia.status}</p>
-            <p title="Texto que indica o que aconteceu com a matéria, ou no caso das indicações, a resposta da Prefeitura"><strong>Texto da ação:</strong> ${materia.texto_completo}</p>            
-            <div class="botoes-acao">
-            ${baixarMateria}
-            ${documentosHTML}            
-            <a href="${baseURL}${materia.link_detail_backend}" target="_blank" class="btn-detalhes" title="Abre outra janela onde são mostradas as informações sobre a matéria.">👁️‍🗨️ Visualizar detalhes</a>
-            </div>
-            </div>
-            `;
-            // Adiciona o card na tela
-            containerResultados.innerHTML += cardHTML;
-        });
-
-        btnAnterior.disabled = (dados.pagination.links.previous === null);
-        btnProximo.disabled = (dados.pagination.links.next === null);
-
-        btnAnterior.style.opacity = btnAnterior.disabled ? "0.5" : "1";
-        btnProximo.style.opacity = btnProximo.disabled ? "0.5" : "1";
-
-        infoPagina.textContent = `Página ${dados.pagination.page} de ${dados.pagination.total_pages}`;
-
-        divPaginacao.style.display = "flex";
-
-    } catch (erro) {
-
-        containerResultados.innerHTML = "<p>Houve um erro ao buscar os dados do SAPL. Tente novamente mais tarde.</p>"
+    if (listaMaterias.length === 0) {
+        containerResultados.innerHTML = `<p style="margin-top:20px;">Nenhuma matéria encontrada com esses filtros. Por favor, faça uma nova pesquisa.</p>`;
         divPaginacao.style.display = "none";
-        console.error("Houve um erro ao se conectar com o SAPL",erro);
-
+        return;
     }
 
+    listaMaterias.forEach(materia => {
+        // O Python já devolve as variáveis injetadas e as datas prontas!
+        const dataFormatada = materia.data_apresentacao_formatada || 'N/A';
+        const nomeAutor = materia.nomeAutorReal || 'Sem autor';
+        const statusTramitacao = materia.status || 'Sem tramitação';
+        const textoAcao = materia.texto_completo || 'Sem texto informativo';
 
+        const baixarMateria = materia.texto_original
+            ? `<a title="Baixe a matéria em PDF" href="${materia.texto_original}" target="_blank" class="btn-baixar">Baixar Matéria (PDF)</a>`
+            : `<span style="color:#777; font-size:0.9em; display:inline-block; margin-top:10px;">(Matéria não disponível)</span>`;
+
+        // Monta os links dos anexos (documentos acessórios)
+        let documentosHTML = '';
+        const docs = materia.documentos_accessorios || [];
+        
+        if (docs.length > 0) {
+            docs.forEach((doc, index) => {
+                const urlArquivo = doc.arquivo;
+                if (urlArquivo && urlArquivo.startsWith('http')) {
+                    documentosHTML += `
+                        <a title="Documentos anexados à matéria." href="${urlArquivo}" target="_blank" class="btn-anexos" style="color:white;">
+                            Baixar Anexo ${index + 1}
+                        </a>`;
+                }
+            });
+        }
+        
+        if (!documentosHTML) {
+            documentosHTML = `<span class="btn-indisponivel" title="Não foi anexado nenhum documento" style="color:white; font-size:0.9em; display:inline-block; margin-top:10px;">(Documento acessório não disponível)</span>`;
+        }
+        
+        const idMateria = materia.id || Math.floor(Math.random() * 100000);
+       
+        const cardHTML = `<div class="caixa-sessao">
+        <h3>${materia.__str__ || 'Matéria sem título'}</h3>
+        <p title="Qual o assunto da matéria"><strong>Ementa:</strong> ${materia.ementa || 'Sem ementa disponível'}</p>
+        <p title="Quando a matéria foi apresentada em plenário"><strong>Data de Apresentação:</strong> ${dataFormatada} </p>
+        <p title="Quem é o vereador que a criou"><strong>Autor:</strong> ${nomeAutor}</p>
+        <p title="Qual o estado atual da matéria?"><strong>Status de tramitação:</strong> ${statusTramitacao}</p>
+        
+        <div id="conteudo-acao-${idMateria}" class="container-texto-acao">
+            <p title="Texto que indica o que aconteceu com a matéria"><strong>Texto da ação:</strong> ${textoAcao}</p> 
+            
+            <div class="bloco-anexos-escondidos" style="margin-top: 15px;">
+                <strong style="display: block; margin-bottom: 8px; color: #222; font-size: 0.95em;">Documentos Acessórios:</strong>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    ${documentosHTML}
+                </div>
+            </div>
+        </div>
+        
+        <div class="botoes-acao">
+            ${baixarMateria}
+            
+            <button type="button" class="btn-detalhes" onclick="alternarTextoAcao(${idMateria})" title="Mostra ou esconde detalhes e anexos">
+                👁️‍🗨️ Visualizar detalhes
+            </button>
+        </div>
+    </div>
+`;
+            
+        containerResultados.innerHTML += cardHTML;
+    });
+
+    // Paginação baseada nos dados do FastAPI (vindos da paginação do SAPL)
+    const pagination = dados.pagination || {};
+    const links = pagination.links || {};
+
+    btnAnterior.disabled = (links.previous === null || links.previous === undefined);
+    btnProximo.disabled = (links.next === null || links.next === undefined);
+
+    btnAnterior.style.opacity = btnAnterior.disabled ? "0.5" : "1";
+    btnProximo.style.opacity = btnProximo.disabled ? "0.5" : "1";
+
+    infoPagina.textContent = `Página ${pagination.page || 1} de ${pagination.total_pages || 1}`;
+    divPaginacao.style.display = "flex";
 }
+
+function alternarTextoAcao(id){
+    const container = document.getElementById(`conteudo-acao-${id}`);
+    
+    if(container){
+        container.classList.toggle('aberto');
+        
+        const botao = container.parentElement.querySelector('.btn-detalhes');
+        if(container.classList.contains('aberto')){
+            botao.innerHTML = '👁️‍🗨️ Ocultar detalhes';
+        } else {
+            botao.innerHTML = '👁️‍🗨️ Visualizar detalhes';
+        }
+        }
+    }
+

@@ -8,6 +8,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 
+from app.api import atas
 from app.api import projetos
 from app.core.limiter import limiter
 
@@ -15,7 +16,7 @@ REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
 
 async def lifespan(app: FastAPI):
 
-    redis = aioredis.from_url(REDIS_URL, encoding="utf-8", decode_responses=True)
+    redis = aioredis.from_url(REDIS_URL)
     FastAPICache.init(RedisBackend(redis), prefix="sapl-cache")
     yield
     #Fechar a conexão quando a API desligar
@@ -32,13 +33,14 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # middleware, permite somente origens conhecidas e métodos aprovados
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['https://www.tapira.mg.leg.br', 'https://tapira.mg.leg.br'],
+    allow_origins=['http://127.0.0.1:8081', 'http://localhost:8081', 'http://localhost:8081'],
     allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["*"],
 )
 
 app.include_router(projetos.router)
+app.include_router(atas.router)
 
 @app.get("/")
 def root():

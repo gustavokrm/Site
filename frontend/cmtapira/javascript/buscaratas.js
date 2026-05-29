@@ -68,8 +68,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function carregarSessoes(ano, pagina) {
 
-    const url = "https://sapl.tapira.mg.leg.br/api/sessao/sessaoplenaria/";
-    const params = `?data_inicio__year=${ano}&o=-data_inicio&page=${pagina}&page_size=5`;
+
+    const url = 'http://127.0.0.1:8000/api/atas';
+    const params = `?ano=${ano}&pagina=${pagina}`;
 
     try {
         const response = await fetch(url + params);
@@ -103,8 +104,8 @@ function renderizarResultados(dados){
 
     if(listaMaterias.length === 0){
 
-        containerResultados.innerHTML =
-        containerResultados.innerHTML = `<p style="margin-top:20px;">Nenhuma matéria encontrada com esses filtros. Por favor, faça uma nova pesquisa.</p>`;
+        container.innerHTML =
+        container.innerHTML = `<p style="margin-top:20px;">Nenhuma matéria encontrada com esses filtros. Por favor, faça uma nova pesquisa.</p>`;
 
         divPaginacao.style.display="none";
 
@@ -147,8 +148,8 @@ function renderizarResultados(dados){
 
     } catch (erro) {
 
-        container.innerHTML = "<p style='color:red; margin-top:20px;'>Erro ao conectar com o SAPL.</p>";
+        container.innerHTML = "<p style='color:red; margin-top:20px;'>Erro ao conectar com o servidor.</p>";
         divPaginacao.style.display = "none";
-        console.error("Houve um erro ao se conectar com o SAPL", erro);
+        console.error("Houve um erro ao se conectar com o servidor", erro);
     }
 }
