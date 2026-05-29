@@ -15,6 +15,16 @@ def formatar_data_br(data_iso: str) -> str:
         return dt.strftime("%d/%m/%Y")
     except Exception:
         return data_iso
+
+@cache.memoize(expire=86400)
+def buscar_tiposmateria():
+    try:
+        response = requests.get(f"{BASE_URL}/materia/tipomaterialegislativa/")
+        if response.status_code == 200:
+            return response.json().get("results", [])
+    except Exception:
+        pass
+    return []
         
 @cache.memoize(expire=86400)
 def buscar_tramitacao(id_materia: int) -> dict:

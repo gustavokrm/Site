@@ -1,7 +1,7 @@
 from typing import Optional
 from fastapi import APIRouter, Query, HTTPException, Request
 from fastapi_cache.decorator import cache
-from app.services.projetosService import pesquisar_materias, carregar_todos_autores
+from app.services.projetosService import buscar_tiposmateria, pesquisar_materias, carregar_todos_autores
 from app.core.limiter import limiter
 
 router = APIRouter() 
@@ -45,5 +45,15 @@ def listar_autores(request: Request):
         autores = carregar_todos_autores(       
         )
         return autores
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/api/materias/tipos")
+@limiter.limit("20/minute")
+@cache(expire=43200)
+def listar_tiposmateria(request: Request):
+    try:
+        tipos = buscar_tiposmateria()
+        return tipos
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

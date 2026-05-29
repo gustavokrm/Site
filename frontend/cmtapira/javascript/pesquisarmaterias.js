@@ -62,17 +62,18 @@ document.addEventListener('DOMContentLoaded', () => {
 // Busca os tipos de matéria da API externa (pode continuar direto ou migrar para o Python depois)
 async function carregarTiposMateria() {
     const selectTipo = document.getElementById('tipo-materia');
-    let urlTiposSapl = 'https://sapl.tapira.mg.leg.br/api/materia/tipomaterialegislativa';
+    let urlTiposSapl = `${URL_BACKEND}/tipos`; // URL do seu backend local que busca os tipos do SAPL
     let todosTipos = [];
 
     try {
         let contador = 0;
         while (urlTiposSapl && contador < 2) {
-            const resposta = await fetch(urlTiposSapl.replace(/^http:/, 'https:'));
+            const resposta = await fetch(urlTiposSapl);
             if (!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
             
             const dados = await resposta.json();
-            todosTipos = todosTipos.concat(dados.results || []);
+            const tiposRetornados = Array.isArray(dados) ? dados : dados.results || [];
+            todosTipos = todosTipos.concat(tiposRetornados);
             urlTiposSapl = dados.pagination && dados.pagination.links ? dados.pagination.links.next : null;
             contador++;
         }
