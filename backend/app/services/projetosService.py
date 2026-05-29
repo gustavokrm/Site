@@ -1,7 +1,10 @@
 from datetime import datetime
 import requests
+from diskcache import Cache
 
 BASE_URL = "https://sapl.tapira.mg.leg.br/api"
+
+cache = Cache(".cache_sapl")
 
 def formatar_data_br(data_iso: str) -> str:
     if not data_iso:
@@ -13,6 +16,7 @@ def formatar_data_br(data_iso: str) -> str:
     except Exception:
         return data_iso
         
+@cache.memoize(expire=86400)
 def buscar_tramitacao(id_materia: int) -> dict:
     try:
         response = requests.get(f"{BASE_URL}/materia/tramitacao/?materia={id_materia}&o=-data_tramitacao")
@@ -24,6 +28,7 @@ def buscar_tramitacao(id_materia: int) -> dict:
         print(f"Erro ao buscar tramitação: {e}")
     return {}
     
+@cache.memoize(expire=86400)
 def buscar_documentos(id_materia: int) -> list:
     try:
         response = requests.get(f"{BASE_URL}/materia/documentoacessorio/?materia={id_materia}")
@@ -33,6 +38,7 @@ def buscar_documentos(id_materia: int) -> list:
         pass
     return []
 
+@cache.memoize(expire=86400)
 def pesquisar_materias(
     tipo: str,
     ano: str,
@@ -93,6 +99,7 @@ def pesquisar_materias(
 
     return dados
     
+@cache.memoize(expire=86400)
 def carregar_todos_autores():
     todos_autores = []
     url_autor = f"{BASE_URL}/base/autor/?tipo=2"

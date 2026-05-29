@@ -1,5 +1,5 @@
 // Configuração da URL do seu servidor Python (FastAPI)
-const URL_BACKEND = 'http://127.0.0.1:8000/api/materias';
+const URL_BACKEND = 'https://pesquisasapl.fastapicloud.dev/api/materias';
 let paginaAtual = 1;
 
 document.addEventListener('DOMContentLoaded', () => {

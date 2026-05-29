@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xml:lang="pt" lang="pt"
+      metal:use-macro="here/main_template/macros/master">
+<body>
+    <div metal:fill-slot="main">
+        <h1 class="documentFirstHeading">Pesquisar acordos</h1>
+        
+        <p class="descricao">
+            Nessa página é possível pesquisar acordos que não envolvam transferência de recursos por ano e por expressões.<br />
+            Os resultados contêm o acordo e é possível baixar diretamente o documento clicando no link correspondente.
+        </p>
+
+        <form method="get">
+            <div class="pesquisa-materias">
+                <div class="grupo-campo">
+                    <label for="pesquisar-expressoes">Digite o termo de pesquisa:</label>
+                    <input type="text" 
+                           class="pesquisar-expressoes" 
+                           id="pesquisar-expressoes" 
+                           name="q" 
+                           title="Digite uma expressão ou palavra chave" 
+                           placeholder="Pesquisar..." 
+                           tal:attributes="value request/q | nothing" />
+                </div>
+
+                <div class="grupo-campo">
+                    <label for="selecao-ano">Selecione o ano:</label>
+                    <select name="ano" id="selecao-ano" class="selecao-ano">
+                        <option value="">-- Todos --</option>
+                        <option value="2026" tal:attributes="selected python:request.get('ano') == '2026' and 'selected' or None"> 2026 </option>
+                        <option value="2025" tal:attributes="selected python:request.get('ano') == '2025' and 'selected' or None"> 2025 </option>
+                        <option value="2024" tal:attributes="selected python:request.get('ano') == '2024' and 'selected' or None"> 2024 </option>
+                        <option value="2023" tal:attributes="selected python:request.get('ano') == '2023' and 'selected' or None"> 2023 </option>
+                    </select>
+                </div>
+
+                <input type="hidden" name="b_start" value="0" />
+                
+                <input type="submit" value="Pesquisar" class="botao-pesquisar" />
+                <input type="button" value="Limpar" class="botao-limpar" onclick="window.location.href=window.location.pathname;" />
+            </div>
+        </form>
+<div tal:define="
+            portal python:context.portal_url.getPortalObject();
+            catalog python:portal.portal_catalog;
+            caminho python:'/'.join(context.getPhysicalPath());
+            
+            q_raw request/q | nothing;
+            termo python:q_raw.strip() if q_raw else '';
+            ano request/ano | nothing;
+            tem_busca python:termo or ano;
+
+            base_query python:{
+                'portal_type': ['File', 'ATFile', 'Folder', 'ATFolder'],
+                'path': {'query': caminho, 'depth': -1},
+                'sort_on': 'modified',
+                'sort_order': 'reverse'
+            };
+            
+            dummy_termo python:termo and base_query.update({'SearchableText': termo});
+            dummy_ano python:ano and base_query.update({
+                'modified': { 
+                    'query': ['%s-01-01 00:00:00' % ano, '%s-12-31 23:59:59' % ano], 
+                    'range': 'min:max' 
+                }
+            });
+            
+            resultados_totais python:tem_busca and [r for r in catalog(**base_query) if r.getPath() != caminho] or [];
+            
+            b_size python: 10;
+            b_start python: int(request.get('b_start', 0));
+            total_resultados python: len(resultados_totais);
+            
+            batch python: resultados_totais[b_start : b_start + b_size];
+            
+            tem_anterior python: b_start > 0;
+            tem_proxima python: (b_start + b_size) < total_resultados;
+            prev_start python: max(0, b_start - b_size);
+            next_start python: b_start + b_size;
+            pagina_atual python: (b_start // b_size) + 1 if total_resultados > 0 else 0;
+            total_paginas python: ((total_resultados - 1) // b_size) + 1 if total_resultados > 0 else 0;
+        ">
+
+            <div tal:condition="tem_busca">
+                <p>
+                    <strong>Total de resultados:</strong> <span tal:content="total_resultados">0</span>
+                    
+                    <a tal:condition="resultados_totais"
+                       tal:attributes="href python:'%s/relatorio_acordos_csv?q=%s&ano=%s' % (context.absolute_url(), termo, ano or '')"
+                       style="margin-left: 15px; text-decoration: none; padding: 4px 10px; background: #28a745; color: white; border-radius: 4px; font-weight: bold; font-size: 0.9em;">
+                       &darr; Exportar Relatório (CSV)
+                    </a>
+                </p>
+
+                <ul tal:condition="batch">
+                    <li tal:repeat="item batch">
+                        <div style="margin-bottom:20px;">
+                            <a tal:attributes="href item/getURL" tal:content="item/Title"> Documento </a> <br />
+                            <small> 
+                                Tipo: <span tal:content="item/portal_type">tipo</span> | 
+                                Data: <span tal:content="python:item.modified.strftime('%d/%m/%Y')"> data </span> 
+                            </small>
+                            <p tal:condition="item/Description" tal:content="item/Description"> descrição </p>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="paginacao" tal:condition="python: total_paginas > 1" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #ddd; text-align: center;">
+                    <a tal:condition="tem_anterior"
+                       tal:attributes="href python:'%s?q=%s&ano=%s&b_start=%s' % (request.get('ACTUAL_URL', ''), termo, ano or '', prev_start)"
+                       class="botao-paginacao" 
+                       style="margin-right: 15px; text-decoration: none; padding: 5px 10px; background: #eee; border-radius: 4px;">&laquo; Anterior</a>
+                    
+                    <span style="font-weight: bold; color: #555;">
+                        Página <span tal:content="pagina_atual">1</span> de <span tal:content="total_paginas">2</span>
+                    </span>
+
+                    <a tal:condition="tem_proxima"
+                       tal:attributes="href python:'%s?q=%s&ano=%s&b_start=%s' % (request.get('ACTUAL_URL', ''), termo, ano or '', next_start)"
+                       class="botao-paginacao" 
+                       style="margin-left: 15px; text-decoration: none; padding: 5px 10px; background: #eee; border-radius: 4px;">Próxima &raquo;</a>
+                </div>
+
+                <p tal:condition="not:resultados_totais" style="color: #666; margin-top: 20px;">
+                    A Câmara Municipal de Tapira informa que não foram encontradas informações a respeito de acordos celebrados <br>
+                    sem a transferência de recursos no período selecionado.
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
