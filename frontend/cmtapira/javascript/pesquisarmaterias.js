@@ -1,5 +1,6 @@
 
 const URL_BACKEND = 'https://pesquisasapl.fastapicloud.dev/api/materias';
+
 let paginaAtual = 1;
 
 document.addEventListener('DOMContentLoaded', () => {

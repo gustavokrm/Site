@@ -1,55 +1,79 @@
 from datetime import datetime
-import requests
-from diskcache import Cache
+import asyncio
+import httpx
 
 BASE_URL = "https://sapl.tapira.mg.leg.br/api"
-
-cache = Cache(".cache_sapl")
 
 def formatar_data_br(data_iso: str) -> str:
     if not data_iso:
         return "N/A"
     try:
-        # Converte data iso para DD/MM/YYYY
-        dt = datetime.strftime(data_iso, "%Y-%m-%d")
+        # Correção do bug original: strptime converte texto em objeto datetime
+        dt = datetime.strptime(data_iso, "%Y-%m-%d")
         return dt.strftime("%d/%m/%Y")
     except Exception:
         return data_iso
 
-@cache.memoize(expire=86400)
-def buscar_tiposmateria():
+async def buscar_tiposmateria() -> list:
     try:
-        response = requests.get(f"{BASE_URL}/materia/tipomaterialegislativa/")
-        if response.status_code == 200:
-            return response.json().get("results", [])
-    except Exception:
-        pass
+        async with httpx.AsyncClient() as client:
+            response = await client.get(f"{BASE_URL}/materia/tipomaterialegislativa/", timeout=5.0)
+            if response.status_code == 200:
+                return response.json().get("results", [])
+    except Exception as e:
+        print(f"Erro ao buscar tipos de matéria: {e}")
     return []
-        
-@cache.memoize(expire=86400)
-def buscar_tramitacao(id_materia: int) -> dict:
+
+async def carregar_todos_autores() -> list:
+    todos_autores = []
+    url_autor = f"{BASE_URL}/base/autor/?tipo=2"
+    contador = 0
+    
+    async with httpx.AsyncClient() as client:
+        while url_autor and contador < 5:
+            try:
+                response = await client.get(url_autor, timeout=5.0)
+                if response.status_code != 200:
+                    break
+                dados = response.json()
+                todos_autores.extend(dados.get("results", []))
+                
+                pagination = dados.get("pagination", {})
+                links = pagination.get("links", {})
+                url_autor = links.get("next") if links else None
+                contador += 1
+            except Exception as e:
+                print(f"Erro ao carregar autores: {e}")
+                break
+    return todos_autores
+
+async def buscar_tramitacao_async(client: httpx.AsyncClient, id_materia: int) -> dict:
     try:
-        response = requests.get(f"{BASE_URL}/materia/tramitacao/?materia={id_materia}&o=-data_tramitacao")
+        response = await client.get(
+            f"{BASE_URL}/materia/tramitacao/?materia={id_materia}&o=-data_tramitacao", 
+            timeout=5.0
+        )
         if response.status_code == 200:
             dados = response.json()
             lista = dados.get("results", [])
-            return lista[0]
+            return lista[0] if lista else {}
     except Exception as e:
-        print(f"Erro ao buscar tramitação: {e}")
+        print(f"Erro na tramitação {id_materia}: {e}")
     return {}
-    
-@cache.memoize(expire=86400)
-def buscar_documentos(id_materia: int) -> list:
+
+async def buscar_documentos_async(client: httpx.AsyncClient, id_materia: int) -> list:
     try:
-        response = requests.get(f"{BASE_URL}/materia/documentoacessorio/?materia={id_materia}")
+        response = await client.get(
+            f"{BASE_URL}/materia/documentoacessorio/?materia={id_materia}", 
+            timeout=5.0
+        )
         if response.status_code == 200:
             return response.json().get("results", [])
     except Exception:
         pass
     return []
 
-@cache.memoize(expire=86400)
-def pesquisar_materias(
+async def pesquisar_materias(
     tipo: str,
     ano: str,
     page: int = 1,
@@ -57,8 +81,6 @@ def pesquisar_materias(
     autor: str = None,
     expressoes: str = None
 ):
-
-    # parâmetros de busca
     params = {
         "expand": "autores",
         "tipo": tipo,
@@ -70,63 +92,57 @@ def pesquisar_materias(
     
     if numero: params["numero"] = numero
     if autor: params["autores"] = autor
-    if expressoes: params["ementa__icontains"]  = expressoes
+    if expressoes: params["ementa__icontains"] = expressoes
     
-    response = requests.get(f"{BASE_URL}/materia/materialegislativa/", params=params)
-    if response.status_code != 200:
-        return {"error": "Erro ao acessar o SAPL"}, response.status_code
-    
-    dados = response.json()
-    materias = dados.get("results", [])
-    
-    for materia in materias:
-        id_materia = materia.get("id")
-        
-        autores_expandidos = materia.get("autores", [])
-        if autores_expandidos:
-            materia["nomeAutorReal"] = autores_expandidos[0].get("nome", "Autor Desconhecido")
-        else:
-            materia["nomeAutorReal"] = "Sem autor"
-    
-        if "data_apresentacao" in materia:
-            materia["data_apresentacao_formatada"] = formatar_data_br(materia["data_apresentacao"])
-            
-        if id_materia:
-            tramitacao_recente = buscar_tramitacao(id_materia)
-            if tramitacao_recente:
-                texto_status = tramitacao_recente.get("__str__", "")
-                if "|" in texto_status:
-                    partes = texto_status.split("|")
-                    materia["status"] = f"{partes[1].strip()} - {partes[2].strip()}" if len(partes) >= 3 else texto_status
-                else:
-                    materia["status"] = texto_status
-                materia["texto_completo"] = tramitacao_recente.get("texto", "Sem texto informativo")
-            else:
-                materia["status"] = "Sem tramitação"
-                materia["texto_completo"] = "Sem texto informativo"
-
-            materia["documentos_accessorios"] = buscar_documentos(id_materia)
-
-    return dados
-    
-@cache.memoize(expire=86400)
-def carregar_todos_autores():
-    todos_autores = []
-    url_autor = f"{BASE_URL}/base/autor/?tipo=2"
-    contador = 0
-    
-    while url_autor and contador < 5:
+    async with httpx.AsyncClient() as client:
         try:
-            response = requests.get(url_autor)
-            if response.status_code !=200:
-                break;
-            dados = response.json()
-            todos_autores.extend(dados.get("results", []))
+            response = await client.get(f"{BASE_URL}/materia/materialegislativa/", params=params, timeout=10.0)
+            if response.status_code != 200:
+                return {"error": "Erro ao acessar o SAPL"}
             
-            pagination = dados.get("pagination", {})
-            links = pagination.get("links", {})
-            url_autor = links.get("next") if links else None
-            contador +=1
-        except Exception:
-            break
-    return todos_autores
+            dados = response.json()
+            materias = dados.get("results", [])
+            
+            tarefas = []
+            
+            for materia in materias:
+                id_materia = materia.get("id")
+                autores = materia.get("autores", [])
+                materia["nomeAutorReal"] = autores[0].get("nome", "Autor Desconhecido") if autores else "Sem autor"
+                
+                if "data_apresentacao" in materia:
+                    materia["data_apresentacao_formatada"] = formatar_data_br(materia["data_apresentacao"])
+                
+                if id_materia:
+                    tarefas.append(buscar_tramitacao_async(client, id_materia))
+                    tarefas.append(buscar_documentos_async(client, id_materia))
+
+            if tarefas:
+                resultados = await asyncio.gather(*tarefas)
+                
+                # Remapeia os resultados assíncronos de volta para cada matéria
+                indice_resultado = 0
+                for materia in materias:
+                    if materia.get("id"):
+                        tramitacao = resultados[indice_resultado]
+                        documentos = resultados[indice_resultado + 1]
+                        indice_resultado += 2
+                        
+                        if tramitacao:
+                            texto_status = tramitacao.get("__str__", "")
+                            if "|" in texto_status:
+                                partes = texto_status.split("|")
+                                materia["status"] = f"{partes[1].strip()} - {partes[2].strip()}" if len(partes) >= 3 else texto_status
+                            else:
+                                materia["status"] = texto_status
+                            materia["texto_completo"] = tramitacao.get("texto", "Sem texto informativo")
+                        else:
+                            materia["status"] = "Sem tramitação"
+                            materia["texto_completo"] = "Sem texto informativo"
+                            
+                        materia["documentos_accessorios"] = documentos
+            
+            return dados
+            
+        except httpx.RequestError as e:
+            return {"error": f"Falha de comunicação com o SAPL: {str(e)}"}

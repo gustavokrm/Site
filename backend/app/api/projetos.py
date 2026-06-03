@@ -9,13 +9,13 @@ router = APIRouter()
 @router.get("/api/materias/pesquisar")
 @limiter.limit("20/minute")
 @cache(expire=43200)
-def listar_projetos(
+async def listar_projetos(
     request: Request,
-    tipo: str = Query(...),
-    ano: str = Query(...),
-    page: int = Query(1),
-    numero: Optional[str] = Query(None),
-    autor: Optional[str] = Query(None),
+    tipo: str = Query(..., max_length=50),
+    ano: str = Query(..., min_length=4, max_length=4, pattern=r"^\d{4}$"),
+    page: int = Query(1, ge=1, le=100),
+    numero: Optional[str] = Query(None, max_length=10),
+    autor: Optional[str] = Query(None, max_length=150),
     expressoes: Optional[str] = Query(
         default=None,
         min_length=3,
@@ -25,7 +25,7 @@ def listar_projetos(
     )     
 ):
     try:
-        projetos = pesquisar_materias(
+        projetos = await pesquisar_materias(
             tipo=tipo,
             ano=ano,
             page=page,
@@ -40,9 +40,9 @@ def listar_projetos(
 @router.get("/api/materias/autores")    
 @limiter.limit("20/minute")
 @cache(expire=43200)
-def listar_autores(request: Request):
+async def listar_autores(request: Request):
     try:
-        autores = carregar_todos_autores(       
+        autores = await carregar_todos_autores(       
         )
         return autores
     except Exception as e:
@@ -51,9 +51,9 @@ def listar_autores(request: Request):
 @router.get("/api/materias/tipos")
 @limiter.limit("20/minute")
 @cache(expire=43200)
-def listar_tiposmateria(request: Request):
+async def listar_tiposmateria(request: Request):
     try:
-        tipos = buscar_tiposmateria()
+        tipos = await buscar_tiposmateria()
         return tipos
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
