@@ -8,6 +8,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 
+from app.api import pauta
 from app.api import atas
 from app.api import projetos
 from app.core.limiter import limiter
@@ -22,7 +23,8 @@ async def lifespan(app: FastAPI):
     #Fechar a conexão quando a API desligar
     await redis.aclose()
 
-app = FastAPI(lifespan=lifespan,docs_url=None,redoc_url=None)
+app = FastAPI(lifespan=lifespan)
+# docs_url=None,redoc_url=None desabilita a documentação automática do FastAPI, que não é necessária para esta API e pode expor detalhes desnecessários.
 
 # anexa o limitador ao estado global da aplicação
 app.state.limiter = limiter
@@ -41,6 +43,7 @@ app.add_middleware(
 
 app.include_router(projetos.router)
 app.include_router(atas.router)
+app.include_router(pauta.router)
 
 @app.get("/")
 def root():

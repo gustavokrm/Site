@@ -1,4 +1,4 @@
-// Configuração da URL do seu servidor Python (FastAPI)
+
 const URL_BACKEND = 'https://pesquisasapl.fastapicloud.dev/api/materias';
 let paginaAtual = 1;
 
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     selectAno.value = "";
     let anoPesquisado = anoAtual;
 
-    // Inicializa os seletores buscando os dados do seu backend Python
+ 
     carregarTiposMateria();
     carregarAutor();
 
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Busca os tipos de matéria da API externa (pode continuar direto ou migrar para o Python depois)
+
 async function carregarTiposMateria() {
     const selectTipo = document.getElementById('tipo-materia');
     let urlTiposSapl = `${URL_BACKEND}/tipos`; // URL do seu backend local que busca os tipos do SAPL
@@ -89,7 +89,7 @@ async function carregarTiposMateria() {
     }
 }
 
-// Otimizado: Busca a lista de autores consolidada do seu backend Python
+
 async function carregarAutor() {
     const selectAutor = document.getElementById('selecao-autor');
     try {
@@ -109,7 +109,7 @@ async function carregarAutor() {
     }
 }
 
-// Otimizado: Faz uma ÚNICA chamada para o Python trazendo tudo pronto
+
 async function pesquisaMateria(pagina) {
     const tipo = document.getElementById('tipo-materia').value.trim();
     const ano = document.getElementById('selecao-ano').value.trim();
@@ -122,7 +122,7 @@ async function pesquisaMateria(pagina) {
         return;
     }
 
-    // Monta os parâmetros para a URL do seu backend local
+    
     const params = new URLSearchParams({
         tipo: tipo,
         ano: ano,
@@ -151,7 +151,7 @@ async function pesquisaMateria(pagina) {
     }
 }
 
-// Função para desenhar o HTML na tela com base nos dados mastigados pelo Python
+
 function renderizarResultados(dados) {
     const btnAnterior = document.getElementById('btn-anterior');
     const btnProximo = document.getElementById('btn-proximo');
@@ -169,7 +169,7 @@ function renderizarResultados(dados) {
     }
 
     listaMaterias.forEach(materia => {
-        // O Python já devolve as variáveis injetadas e as datas prontas!
+        
         const dataFormatada = materia.data_apresentacao_formatada || 'N/A';
         const nomeAutor = materia.nomeAutorReal || 'Sem autor';
         const statusTramitacao = materia.status || 'Sem tramitação';
@@ -232,7 +232,7 @@ function renderizarResultados(dados) {
         containerResultados.innerHTML += cardHTML;
     });
 
-    // Paginação baseada nos dados do FastAPI (vindos da paginação do SAPL)
+   
     const pagination = dados.pagination || {};
     const links = pagination.links || {};
 

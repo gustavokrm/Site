@@ -54,13 +54,13 @@
             base_query python:{
                 'portal_type': ['File', 'ATFile', 'Folder', 'ATFolder'],
                 'path': {'query': caminho, 'depth': -1},
-                'sort_on': 'modified',
+                'sort_on': 'created',
                 'sort_order': 'reverse'
             };
             
             dummy_termo python:termo and base_query.update({'SearchableText': termo});
             dummy_ano python:ano and base_query.update({
-                'modified': { 
+                'created': { 
                     'query': ['%s-01-01 00:00:00' % ano, '%s-12-31 23:59:59' % ano], 
                     'range': 'min:max' 
                 }
@@ -99,7 +99,7 @@
                             <a tal:attributes="href item/getURL" tal:content="item/Title"> Documento </a> <br />
                             <small> 
                                 Tipo: <span tal:content="item/portal_type">tipo</span> | 
-                                Data: <span tal:content="python:item.modified.strftime('%d/%m/%Y')"> data </span> 
+                                Data: <span tal:content="python:item.created.strftime('%d/%m/%Y')"> data </span> 
                             </small>
                             <p tal:condition="item/Description" tal:content="item/Description"> descrição </p>
                         </div>
