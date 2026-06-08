@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt" lang="pt"
-metal:use-macro="here/main_template/macros/master">
+<html lang="pt-br">
 <head>
-    
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesquisar projetos e indicações</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <metal:main fill-slot="main">
-      
-        <script type="module" tal:attributes="src string:${portal_url}/++theme++cmtapira/javascript/pesquisarmaterias.js"></script>        
-
+    <script src="../javascript/pesquisarmaterias.js"></script>
+<div class="pagina-pesquisa-legislativa">
         <h1 class="documentFirstHeading">Pesquisar matéria legislativa</h1>
         <h3 class="documentSecondHeading" style="color: red;">Os campos marcados com * são obrigatórios</h3>
         <p class="descricao">Selecione o tipo de matéria e o ano que ela foi aprovada.<br />
@@ -16,8 +16,8 @@ metal:use-macro="here/main_template/macros/master">
         Para fazer nova pesquisa, clique em limpar, preencha novamente os campos e clique em pesquisar.<br />
         Se nenhum autor for especificado, a pesquisa retornará todas as matérias que foram feitas daquele tipo no ano especificado.<br />
         </p>
-
-        <div class="pesquisa-materias" style="margin-bottom: 20px;">
+      
+        <div class="pesquisa-materias">
 
             <div class="grupo-campo">
             <label for="tipo-materia"><strong>Tipo de matéria *</strong></label>
@@ -66,9 +66,9 @@ metal:use-macro="here/main_template/macros/master">
             <span id="info-pagina" style="font-weight: bold; color: #555;">Página 1</span>
             <button type="button" id="btn-proximo" class="botao-pesquisar-atas" disabled="disabled">Próxima »</button>
         </div>
+  </div>
 
-
-    </metal:main>
+ 
 </body>
 
 </html>

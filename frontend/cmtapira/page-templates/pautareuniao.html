@@ -7,14 +7,14 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-    <script type="module" src="ultimasessao.js"></script>
+    <script type="module" src="../javascript/ultimasessao.js"></script>
 
     <h1 id="titulo-pagina">Pauta da reunião</h1>
         
         <p>Pesquise pautas de reuniões ordinárias, extraordinárias e solenes.<br>
         É possível filtrar por ano, mês, dia e tipo de reunião.<br>
         Também é possível imprimir a pauta da reunião em PDF, clicando no botão "Impressão da pauta em PDF" que aparecerá nos detalhes de cada sessão encontrada.
-        <h2 class="documentFirstHeading" id="titulo-sessao"></h2>
+        
     </p>
 
         <select id="select-ano" title="Selecione o ano" style="margin-bottom: 20px; padding: 5px; font-size: 1em;">
@@ -91,8 +91,10 @@
         
 
         <div id="lista-sessoes"></div>
+        
 
         <div id="detalhes-reuniao" style="display: none;">
+            <h2 class="documentFirstHeading" id="titulo-sessao"></h2>
             <p id="data-sessao" style="color: #666; font-size: 1.1em; margin-bottom: 20px;">
                 Buscando informações da última sessão...
             </p>
@@ -103,6 +105,12 @@
 
             <h2 class="secao-pauta">Votação (Ordem do Dia)</h2>
             <div id="conteudo-ordem-dia" class="container-cards"></div>
+        </div>
+        
+        <div id="controles-paginacao" style="display: none; align-items: center; gap: 15px; margin-top: 20px; margin-bottom: 30px;">
+                <button type="button" id="btn-anterior" class="botao-pesquisar-atas" disabled="disabled">« Anterior</button>
+                <span id="info-pagina" style="font-weight: bold; color: #555;">Página 1</span>
+                <button type="button" id="btn-proximo" class="botao-pesquisar-atas" disabled="disabled">Próxima »</button>
         </div>
 </body>
 </html>
