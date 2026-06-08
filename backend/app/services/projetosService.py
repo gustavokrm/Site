@@ -15,36 +15,63 @@ def formatar_data_br(data_iso: str) -> str:
         return data_iso
 
 async def buscar_tiposmateria() -> list:
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(f"{BASE_URL}/materia/tipomaterialegislativa/", timeout=5.0)
-            if response.status_code == 200:
-                return response.json().get("results", [])
-    except Exception as e:
-        print(f"Erro ao buscar tipos de matéria: {e}")
-    return []
+    todos_tipos = []
+    
+    url_tipos = f"{BASE_URL}/materia/tipomaterialegislativa/"
+    
+    async with httpx.AsyncClient(follow_redirects=True) as client:
+    
+        while url_tipos:
+            try:
+                response = await client.get(url_tipos, timeout=10.0)
+                if response.status_code !=200:
+                    break
+                
+                dados = response.json()
+                todos_tipos.extend(dados.get("results", []))
+                
+                # pagination.links.next
+                proxima_url = dados.get("next")
+                if not proxima_url:
+                    proxima_url = dados.get("pagination", {}).get("links", {}).get("next")
+                    
+                if proxima_url and proxima_url.startswith("http://"):
+                    proxima_url = proxima_url.replace("http://", "https://")
+                url_tipos = proxima_url
+            
+            except Exception as e:
+                print(f"Erro ao buscar tipos de matéria: {e}")
+                break
+    return todos_tipos
 
 async def carregar_todos_autores() -> list:
     todos_autores = []
     url_autor = f"{BASE_URL}/base/autor/?tipo=2"
-    contador = 0
     
     async with httpx.AsyncClient() as client:
-        while url_autor and contador < 5:
+        while url_autor:
             try:
                 response = await client.get(url_autor, timeout=5.0)
                 if response.status_code != 200:
                     break
+                    
                 dados = response.json()
                 todos_autores.extend(dados.get("results", []))
                 
-                pagination = dados.get("pagination", {})
-                links = pagination.get("links", {})
-                url_autor = links.get("next") if links else None
-                contador += 1
+                #pagination.links.next
+                proxima_url = dados.get("next")
+                if not proxima_url:
+                    proxima_url = dados.get("pagination", {}).get("links", {}).get("next")
+                
+                if proxima_url and proxima_url.startswith("http://"):
+                    proxima_url = proxima_url.replace("http://", "https://")
+                    
+                url_autor = proxima_url
+                
             except Exception as e:
                 print(f"Erro ao carregar autores: {e}")
                 break
+                
     return todos_autores
 
 async def buscar_tramitacao_async(client: httpx.AsyncClient, id_materia: int) -> dict:

@@ -67,7 +67,8 @@ async function carregarTiposMateria() {
     let todosTipos = [];
 
     try {
-        let contador = 0;
+    
+        /*let contador = 0;
         while (urlTiposSapl && contador < 2) {
             const resposta = await fetch(urlTiposSapl);
             if (!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
@@ -76,7 +77,11 @@ async function carregarTiposMateria() {
             const tiposRetornados = Array.isArray(dados) ? dados : dados.results || [];
             todosTipos = todosTipos.concat(tiposRetornados);
             urlTiposSapl = dados.pagination && dados.pagination.links ? dados.pagination.links.next : null;
-            contador++;
+            contador++;*/
+            const resposta = await fetch(`${URL_BACKEND}/tipos`);
+            if(!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
+            const todosTipos = await resposta.json();
+            
         }
 
         todosTipos.forEach(tipo => {
@@ -247,7 +252,7 @@ function renderizarResultados(dados) {
     divPaginacao.style.display = "flex";
 }
 
-function alternarTextoAcao(id){
+window.alternarTextoAcao = function(id) {
     const container = document.getElementById(`conteudo-acao-${id}`);
     
     if(container){
