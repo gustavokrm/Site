@@ -68,16 +68,6 @@ async function carregarTiposMateria() {
 
     try {
     
-        /*let contador = 0;
-        while (urlTiposSapl && contador < 2) {
-            const resposta = await fetch(urlTiposSapl);
-            if (!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
-            
-            const dados = await resposta.json();
-            const tiposRetornados = Array.isArray(dados) ? dados : dados.results || [];
-            todosTipos = todosTipos.concat(tiposRetornados);
-            urlTiposSapl = dados.pagination && dados.pagination.links ? dados.pagination.links.next : null;
-            contador++;*/
             const resposta = await fetch(`${URL_BACKEND}/tipos`);
             if(!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
             const todosTipos = await resposta.json();

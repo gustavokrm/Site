@@ -9,6 +9,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 
 from app.api import atas
+from app.api import pautas
 from app.api import projetos
 from app.core.limiter import limiter
 
@@ -34,13 +35,14 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # middleware, permite somente origens conhecidas e métodos aprovados
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['https://www.tapira.mg.leg.br', 'https://tapira.mg.leg.br'],
+    allow_origins=['*'],
     allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["*"],
 )
 
 app.include_router(projetos.router)
+app.include_router(pautas.router)
 app.include_router(atas.router)
 
 

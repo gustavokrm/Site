@@ -656,7 +656,7 @@ footer p {
     padding: 20px;
     background-color: #fcfcfc;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    margin: 0;
+    margin: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -850,7 +850,7 @@ body.section-front-page .documentDescription {
 .acoes-pesquisa {
     grid-column:  1 / -1;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
     gap: 15px;
     margin-top: 10px;
 }
