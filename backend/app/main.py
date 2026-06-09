@@ -23,8 +23,7 @@ async def lifespan(app: FastAPI):
     #Fechar a conexão quando a API desligar
     await redis.aclose()
 
-app = FastAPI(lifespan=lifespan)
-# docs_url=None,redoc_url=None desabilita a documentação automática do FastAPI, que não é necessária para esta API e pode expor detalhes desnecessários.
+app = FastAPI(lifespan=lifespan, docs_url=None,redoc_url=None)
 
 # anexa o limitador ao estado global da aplicação
 app.state.limiter = limiter
@@ -35,7 +34,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # middleware, permite somente origens conhecidas e métodos aprovados
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['*'],
+    allow_origins=['https://www.tapira.mg.leg.br', 'https://tapira.mg.leg.br'],
     allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["*"],

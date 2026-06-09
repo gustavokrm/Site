@@ -629,57 +629,36 @@ footer p {
 /* Container principal da pesquisa */
 .pesquisa-materias {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    grid-template-columns: 1fr 1fr; /* Duas colunas */
     gap: 20px;
-    align-items: end;
-    max-width: 1000px;
-    margin: 0 auto 30px auto;
+    align-items: start; /* Alterado de 'center' para 'start' para alinhar os topos */
+    max-width: 800px;
     
 }
 
 #lista-sessoes {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 25px;
+    display: flex;
+    flex-direction: column;
     width: 100%;
-    max-width: 1100px;
-    margin: 30px auto;
-    padding: 0 15px;
-    box-sizing: border-box;
+    max-width: 800px;    
 }
 
 
 .caixa-sessao {
     
     border-left: 4px solid #005b9f;
-    border-radius: 6px;
-    padding: 20px;
+    border-radius: 4px;
+    padding: 15px;
     background-color: #fcfcfc;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    margin: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    box-sizing: border-box;
-    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    margin-bottom: 15px;
+    margin: 20px 0;
+    transition: transform 0.3s ease-out;
     
 }
 
 .caixa-sessao:hover{
-    transform: translateY(-5px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-}
-
-.caixa-sessao p{
-  font-size: 0.95em;
-  line-height: 1.5;
-  margin: 0 0 12px 0;
-  color: #444;
-}
-
-.caixa-sessao p strong {
-  color: #222;
+    transform: scale(1.06);
 }
 
 .caixa-sessao h3 {
@@ -688,34 +667,56 @@ footer p {
 }
 
 .botoes-acao {
-  
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: auto;
-  padding-top: 15px;
-  border-top: 1px solid: #f0f0f0;
-  
+
+    display: flex;
+    gap: 20px;
+
 }
 
-.btn-ata, .btn-baixar, .btn-detalhes, .btn-anexos, .btn-indisponivel {
+.btn-ata, .btn-baixar {
     
-    background-color: #1B71A6;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #38b6ff; 
     color: white;
-    flex: 1 1 calc(50% - 10px);
-    min-width: 120px;
-    margin-top: 0 !important;
-    padding: 8px 10px;
-    font-size: 0.85em;
-    text-align: center;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
 }
 
 .btn-detalhes {
-    flex: 1 1 100%; 
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #1F5A78;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;    
+}
+
+.btn-indisponivel {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #828B8F;
+    color: white !important;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;    
+}
+
+.btn-anexos {
+    
+    display: inline-block;
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #99BDD1;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;  
+    
 }
 
 .btn-ata:hover {
@@ -808,15 +809,6 @@ body.section-front-page .documentDescription {
 /*Banners responsivos*/
 
 @media (max-width: 768px) {
-
-    .documentFirstHeading{
-      width: 360px;    
-    }
-    
-    #parent-fieldname-text.plain {
-      width: 360px;    
-    }
-    
     .cover-banner-tile.tile-content {
         display: inline-block !important; /* Permite que fiquem na mesma linha */
         vertical-align: top;
@@ -850,10 +842,9 @@ body.section-front-page .documentDescription {
 .acoes-pesquisa {
     grid-column:  1 / -1;
     display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 10px;
-    margin-bottom: 30px;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
 }
 
 /* Botão de limpar os campos */
@@ -971,74 +962,7 @@ body.section-front-page .documentDescription {
     transition: color 0.3s ease;
 }
 
-/* ==========================================================================
-   Isolamento e Centralização da Página de Pesquisa
-   ========================================================================== */
-
-/* Define uma largura máxima para todo o conteúdo da página e centraliza o bloco */
-.pagina-pesquisa-legislativa {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-/* Centraliza os títulos especificamente nesta página */
-.pagina-pesquisa-legislativa .documentFirstHeading,
-.pagina-pesquisa-legislativa .documentSecondHeading {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    width: 100%; /* Reseta o valor fixo de 360px do mobile que causava quebra */
-}
-
-/* Espaçamento extra no título principal */
-.pagina-pesquisa-legislativa .documentFirstHeading {
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-
-/* Centraliza o parágrafo de descrição e limita a largura para melhor leitura */
-.pagina-pesquisa-legislativa .descricao {
-    text-align: justify;
-    hyphens: auto;
-    max-width: 800px;
-    margin: 0 auto 30px auto; /* Centraliza o bloco do parágrafo */
-    line-height: 1.6;
-    color: #555;
-}
-
-/* Centraliza e corrige os Controles de Paginação */
-.pagina-pesquisa-legislativa #controles-paginacao {
-    display: none; /* Mantido como none, o JS altera para flex quando necessário */
-    justify-content: center; /* Centraliza horizontalmente os botões e o texto */
-    align-items: center;
-    gap: 15px;
-    width: 100%;
-    max-width: 100%; /* Permite que use o espaço total centralizado */
-    margin: 40px auto 30px auto; /* Espaçamento simétrico acima e abaixo */
-}
-
-/* Estilização extra para os botões de paginação (anterior/próximo) combinarem com a página */
-.pagina-pesquisa-legislativa .botao-pesquisar-atas {
-    background-color: #38b6ff;
-    color: white;
-    padding: 9px 20px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-.pagina-pesquisa-legislativa .botao-pesquisar-atas:hover:not(:disabled) {
-    background-color: #008ee0;
-}
-
-/* ==========================================================================
-   Controle de Exibição do Texto da Ação (Collapse)
-   ========================================================================== */
+/* Controle do mostrar detalhes da matéria */
 
 .container-texto-acao {
     max-height: 0; /* Começa totalmente encolhido */

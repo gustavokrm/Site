@@ -46,7 +46,8 @@ async def buscarSessoes(
     params = {
         'tipo': tipo,
         'page': page,
-        'page_size': page_size
+        'page_size': page_size,
+        "o": "-data_inicio"
     }
     
     if ano:
