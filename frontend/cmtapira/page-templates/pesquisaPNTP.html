@@ -54,7 +54,7 @@
             tem_busca python:termo or ano;
 
             base_query python:{
-                'portal_type': ['Folder', 'ATFolder'],
+                'portal_type': ['File', 'ATFile', 'Folder', 'ATFolder'],
                 'path': {'query': caminho, 'depth': -1},
                 'sort_on': 'created',
                 'sort_order': 'reverse'
