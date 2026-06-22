@@ -1,47 +1,65 @@
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt" lang="pt"
       metal:use-macro="here/main_template/macros/master">
+      <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HTML 5 Boilerplate</title>
+    <link rel="stylesheet" href="../css/style.css">
+  </head>
 <body>
     
     <metal:main fill-slot="main">
         
-        <script type="module" tal:attributes="src string:${portal_url}/++theme++cmtapira/javascript/respostas.js"></script>        
-    
-  <h1>Respostas de indicações</h1>
-   <p>Respostas das indicações feitas pelos vereadores à Prefeitura.<br>
-    Selecione o autor e o ano da indicação para visualizar as respostas.<br>
-    <p style="color: red;"><strong>Os campos marcados com * são obrigatórios</strong></p>
+        <!--<script type="module" tal:attributes="src string:${portal_url}/++theme++cmtapira/javascript/respostas.js"></script>-->
+        <script type="module" src="../javascript/respostas.js"></script>
+    <div class="pagina-pesquisa-legislativa">
+      <h1 class="documentFirstHeading">Respostas de indicações</h1>
+      <p class="descricao">Respostas das indicações feitas pelos vereadores à Prefeitura.<br>
+      Selecione o autor e o ano da indicação para visualizar as respostas.<br>      
+      <p class="descricao" style="color: red;"><strong>Os campos marcados com * são obrigatórios</strong></p>
+      <p class="descricao"><strong>Atualizado em 12 de junho de 2026</strong></p>
+        
+        <div class="pesquisa-materias">
+          
+            <div class="grupo-campo">
+              <div id="pesquisa-autor">
+                  <label for="autor">*Autor:</label>
+                  <select id="selecao-autor" class="caixa-selecao" title="Selecione o vereador que fez a indicação">
+                      <option value="">Selecione o autor</option>
+                  </select>
+              </div>
+            </div>
 
-    <div id="pesquisa-autor">
-        <label for="autor">*Autor:</label>
-        <select id="selecao-autor" class="caixa-selecao" title="Selecione o vereador que fez a indicação">
-            <option value="">Selecione o autor</option>
-        </select>
-    </div>
+            <div class="grupo-campo">
+              <div id="pesquisa-ano">
+                  <label for="ano">*Ano:</label>
+                  <select id="selecao-ano" class="caixa-selecao" title="Selecione o ano em que o vereador fez a indicação">
+                      <option value="">Selecione o ano</option>
+                      <option value="2026">2026</option>
+                      <option value="2025">2025</option>
+                  </select>
+              </div>
+            </div>
+          
 
-    <div id="pesquisa-ano">
-        <label for="ano">*Ano:</label>
-        <select id="selecao-ano" class="caixa-selecao" title="Selecione o ano em que o vereador fez a indicação">
-            <option value="">Selecione o ano</option>
-            <option value="2026">2026</option>
-            <option value="2025">2025</option>
-        </select>
-    </div>
-
-    <div class="acoes-pesquisa">
-        <button type="button" id="btn-limpar" class="botao-limpar" title="Limpa todos os campos para fazer uma nova pesquisa">Limpar</button>
-        <button type="button" id="btn-pesquisar" class="botao-pesquisar" title="Pesquisa as respostas de indicações do vereador escolhido">Pesquisar</button>
-
-    </div>
-
-    <div id="lista-sessoes">
-        <!-- As sessões serão carregadas aqui dinamicamente -->
-    </div>  
-
-     <div id="controles-paginacao" style="display: none; align-items: center; gap: 15px; margin-top: 20px; margin-bottom: 30px;">
-            <button type="button" id="btn-anterior" class="botao-pesquisar-atas" disabled="disabled">« Anterior</button>
-            <span id="info-pagina" style="font-weight: bold; color: #555;">Página 1</span>
-            <button type="button" id="btn-proximo" class="botao-pesquisar-atas" disabled="disabled">Próxima »</button>
+          <div class="acoes-pesquisa">
+              <button type="button" id="btn-limpar" class="botao-limpar" title="Limpa todos os campos para fazer uma nova pesquisa">Limpar</button>
+              <button type="button" id="btn-pesquisar" class="botao-pesquisar" title="Pesquisa as respostas de indicações do vereador escolhido">Pesquisar</button>
+          </div>
         </div>
+
+        <div id="lista-sessoes">
+            <!-- As sessões serão carregadas aqui dinamicamente -->
+        </div>  
+
+         <div id="controles-paginacao" style="display: none; align-items: center; gap: 15px; margin-top: 20px; margin-bottom: 30px;">
+                <button type="button" id="btn-anterior" class="botao-pesquisar-atas" disabled="disabled">« Anterior</button>
+                <span id="info-pagina" style="font-weight: bold; color: #555;">Página 1</span>
+                <button type="button" id="btn-proximo" class="botao-pesquisar-atas" disabled="disabled">Próxima »</button>
+            </div>
+  </div>
 </metal:main>
 </body>
 </html>

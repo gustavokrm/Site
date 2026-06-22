@@ -47,6 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
      });
 
+	document.getElementById('btn-limpar').addEventListener('click', () => {
+		document.getElementById('selecao-ano').value = "";
+		document.getElementById('selecao-tipo').value = "";
+		document.getElementById('lista-sessoes').innerHTML = "";
+		document.getElementById('controles-paginacao').style.display = "none";
+		const infoPagina = document.getElementById('info-pagina');
+		if (infoPagina) infoPagina.textContent = "Página 1";
+
+		paginaAtual = 1;
+	});
+	
+
      document.getElementById('btn-proximo').addEventListener('click', () => {
          paginaAtual++;
          carregarSessoes(anoPesquisado, paginaAtual);
@@ -60,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
          }
 
      });
+     
      // Inicia a primeira busca na página 1
 
      //carregarSessoes(anoPesquisado, paginaAtual);
@@ -69,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 async function carregarSessoes(ano, pagina) {
 
 
+    //const url = 'https://pesquisasapl.fastapicloud.dev/api/atas';
     const url = 'http://127.0.0.1:8000/api/atas';
     const params = `?ano=${ano}&pagina=${pagina}`;
 

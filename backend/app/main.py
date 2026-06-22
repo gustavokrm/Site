@@ -34,7 +34,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 # middleware, permite somente origens conhecidas e métodos aprovados
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['https://www.tapira.mg.leg.br', 'https://tapira.mg.leg.br'],
+    allow_origins=['*'],
     allow_credentials=True,
     allow_methods=["GET"],
     allow_headers=["*"],
