@@ -10,18 +10,18 @@ Portal Modelo (Plone 4.3), Python 3.13.5, docker (para testes), docker-compose.
 
 # Desenvolvimento:
 
-```docker-compose up
+```docker-compose up ```
 
 para subir o portal modelo e fazer os testes.
 
 O Backend depende do FastAPI, uma biblioteca Python para criação de APIs. Ela se alimenta da API do SAPL e retorna os dados para o Frontend.
 Para subir a API em desenvolvimento, instale:
 
-```pip install FastAPI[standard]
+```pip install FastAPI[standard]```
 
 e depois rode para subir o servidor em desenvolvimento: 
 
-```fastapi dev
+```fastapi dev```
 
 Baixe o tema e instale-o na sua interface de tema nas configurações do Portal Modelo.
 Ao instalar o tema, ele já virá com o JS necessário para se comunicar com a API.
