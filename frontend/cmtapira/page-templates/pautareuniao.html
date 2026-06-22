@@ -9,90 +9,95 @@
 <body>
     <script type="module" src="../javascript/ultimasessao.js"></script>
 
-    <h1 id="titulo-pagina">Pauta da reunião</h1>
+    <body>
+    <script type="module" src="../javascript/ultimasessao.js"></script>
+
+    <div class="pagina-pesquisa-legislativa">
         
-        <p>Pesquise pautas de reuniões ordinárias, extraordinárias e solenes.<br>
-        É possível filtrar por ano, mês, dia e tipo de reunião.<br>
-        Também é possível imprimir a pauta da reunião em PDF, clicando no botão "Impressão da pauta em PDF" que aparecerá nos detalhes de cada sessão encontrada.
-        
-    </p>
+        <h1 id="titulo-pagina" class="documentFirstHeading">Pauta da reunião</h1>
+            
+        <p class="descricao">
+            Pesquise pautas de reuniões ordinárias, extraordinárias e solenes.<br>
+            É possível filtrar por ano, mês, dia e tipo de reunião.<br>
+            Também é possível imprimir a pauta da reunião em PDF, clicando no botão "Impressão da pauta em PDF" que aparecerá nos detalhes de cada sessão encontrada.
+        </p>
 
-        <select id="select-ano" title="Selecione o ano" style="margin-bottom: 20px; padding: 5px; font-size: 1em;">
-            <option value="">Selecione o ano</option>
-            <option value="2026">2026</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>            
-        </select>
+        <div class="filtros-pesquisa">
+            <select id="select-ano" title="Selecione o ano" class="caixa-selecao">
+                <option value="">Selecione o ano</option>
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>            
+            </select>
 
-        <select id="select-mes" title="Selecione o mês" style="margin-bottom: 20px; padding: 5px; font-size: 1em; margin-left: 10px;">
-            <option value="">Selecione o mês</option>
-            <option value="01">Janeiro</option>
-            <option value="02">Fevereiro</option>
-            <option value="03">Março</option>
-            <option value="04">Abril</option>
-            <option value="05">Maio</option>
-            <option value="06">Junho</option>
-            <option value="07">Julho</option>
-            <option value="08">Agosto</option>
-            <option value="09">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-        </select>
+            <select id="select-mes" title="Selecione o mês" class="caixa-selecao">
+                <option value="">Selecione o mês</option>
+                <option value="01">Janeiro</option>
+                <option value="02">Fevereiro</option>
+                <option value="03">Março</option>
+                <option value="04">Abril</option>
+                <option value="05">Maio</option>
+                <option value="06">Junho</option>
+                <option value="07">Julho</option>
+                <option value="08">Agosto</option>
+                <option value="09">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+            </select>
 
-        <select id="select-dia" title="Selecione o dia" style="margin-bottom: 20px; padding: 5px; font-size: 1em; margin-left: 10px;">
-            <option value="">Selecione o dia</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-        </select>
+            <select id="select-dia" title="Selecione o dia" class="caixa-selecao">
+                <option value="">Selecione o dia</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+                <option value="16">16</option>
+                <option value="17">17</option>
+                <option value="18">18</option>
+                <option value="19">19</option>
+                <option value="20">20</option>
+                <option value="21">21</option>
+                <option value="22">22</option>
+                <option value="23">23</option>
+                <option value="24">24</option>
+                <option value="25">25</option>
+                <option value="26">26</option>
+                <option value="27">27</option>
+                <option value="28">28</option>
+                <option value="29">29</option>
+                <option value="30">30</option>
+                <option value="31">31</option>
+            </select>
 
-        <select id="select-tipo" title="Selecione o tipo de reunião" style="margin-bottom: 20px; padding: 5px; font-size: 1em; margin-left: 10px;">
-            <option value="">Selecione o tipo de reunião</option>
-            <option value="1">Reunião Ordinária</option>
-            <option value="2">Reunião Extraordinária</option>
-            <option value="3">Reunião Solene</option>
-        </select>
-        
-        <div class="acoes-pesquisa">
-            <button id="btn-pesquisar" title="Pesquisa as pautas de reunião de acordo com os filtros selecionados" class="botao-pesquisar">Pesquisar</button>
-            <button id="btn-limpar" title="Limpa todos os filtros e mostra todas as sessões" class="botao-limpar">Limpar</button>      
-
+            <select id="select-tipo" title="Selecione o tipo de reunião" class="caixa-selecao">
+                <option value="">Selecione o tipo de reunião</option>
+                <option value="1">Reunião Ordinária</option>
+                <option value="2">Reunião Extraordinária</option>
+                <option value="3">Reunião Solene</option>
+            </select>
         </div>
         
-
+        <div class="acoes-pesquisa">
+            <button id="btn-limpar" title="Limpa todos os filtros e mostra todas as sessões" class="botao-limpar">Limpar</button>  
+            <button id="btn-pesquisar" title="Pesquisa as pautas de reunião de acordo com os filtros selecionados" class="botao-pesquisar">Pesquisar</button>
+                
+        </div>
+        
         <div id="lista-sessoes"></div>
         
-
         <div id="detalhes-reuniao" style="display: none;">
             <h2 class="documentFirstHeading" id="titulo-sessao"></h2>
             <p id="data-sessao" style="color: #666; font-size: 1.1em; margin-bottom: 20px;">
@@ -107,10 +112,13 @@
             <div id="conteudo-ordem-dia" class="container-cards"></div>
         </div>
         
-        <div id="controles-paginacao" style="display: none; align-items: center; gap: 15px; margin-top: 20px; margin-bottom: 30px;">
+        <div id="controles-paginacao" style="display: none;">
                 <button type="button" id="btn-anterior" class="botao-pesquisar-atas" disabled="disabled">« Anterior</button>
                 <span id="info-pagina" style="font-weight: bold; color: #555;">Página 1</span>
                 <button type="button" id="btn-proximo" class="botao-pesquisar-atas" disabled="disabled">Próxima »</button>
         </div>
+
+    </div>
+</body>
 </body>
 </html>

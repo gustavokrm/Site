@@ -43,7 +43,15 @@
 
                 <div class="grupo-campo">
                 <label for="numero-materia"><strong>Número</strong></label>
-                <input type="number" step="1" value="" id="numero-materia" class="selecao-numero" placeholder="Número" title="Qual o número da matéria? Por exemplo, indicação nº 23">
+                <input 
+                  type="text" 
+                  inputmode="numeric" 
+                  pattern="[0-9]*" 
+                  id="numero-materia"
+                  oninput="this.value = this.value.replace(/[^0-9]/g,'');"
+                  class="selecao-numero" 
+                  placeholder="Número" 
+                  title="Qual o número da matéria? Por exemplo, indicação nº 23">
                 </div>
 
                 <div class="grupo-campo">

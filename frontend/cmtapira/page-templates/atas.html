@@ -1,5 +1,14 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt" lang="pt"
-      metal:use-macro="here/main_template/macros/master">
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pt-br"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      metal:use-macro="context/main_template/macros/master">
 <body>
     
     <metal:main fill-slot="main">
@@ -10,15 +19,31 @@
         <h1 class="documentFirstHeading">Atas das Reuniões</h1>
         <p class="descricao">Contém as atas das reuniões desde 2023.<br>
         As atas das reuniões são votadas e disponibilizadas na semana seguinte à reunião.<br>  
-        Selecione o ano desejado e clique em pesquisar para poder baixar as atas.</p>
+        Selecione o ano desejado, o tipo de reunião, e clique em pesquisar para poder baixar as atas.</p>
 
-        <div class="pesquisa-atas" style="margin-bottom: 20px;">
-            <label for="ano-ata"><strong>Ano:</strong></label>
-            <select id="ano-ata" class="caixa-selecao">
+        <div class="pesquisa-materias">
+            <div class="grupo-campo">
+              <label for="ano-ata"><strong>Ano:</strong></label>
+              <select id="ano-ata" class="selecao-ano">
+                  <option value="">Selecione</option>           
+              </select>
+            </div>
+            
+            <div class="grupo-campo">
+              <label for="select-tipo" title="Selecione o tipo de reunião, se é ordinária, extraordinária ou solene">Tipo de reunião:</label>
+              <select id="select-tipo" class="selecao-ano">
                 <option value="">Selecione</option>
-            </select>
-            <button type="button" id="btn-pesquisar" class="botao-pesquisar">Pesquisar</button>
+                <option value="1">Reunião ordinária</option>
+                <option value="2">Reunião extraordinária</option>
+                <option value="3">Reunião solene</option>
+              </select>
+            </div>
+          
+         <div class="acoes-pesquisa">
+            <button id="btn-limpar" title="Limpa todos os filtros e mostra todas as sessões" class="botao-limpar">Limpar</button>  
+            <button id="btn-pesquisar" title="Pesquisa as pautas de reunião de acordo com os filtros selecionados" class="botao-pesquisar">Pesquisar</button>                
         </div>
+      </div>
 
         <div id="lista-sessoes"></div>
 

@@ -4,11 +4,12 @@
       metal:use-macro="here/main_template/macros/master">
 <body>
     <div metal:fill-slot="main">
-        <h1 class="documentFirstHeading">Pesquisar acordos</h1>
+        <h1 class="documentFirstHeading">Pesquisar licitações</h1>
         
         <p class="descricao">
-            Nessa página é possível pesquisar acordos que não envolvam transferência de recursos por ano e por expressões.<br />
-            Os resultados contêm o acordo e é possível baixar diretamente o documento clicando no link correspondente.
+            Nessa página é possível pesquisar licitações realizadas pela Câmara por ano e por expressões.<br />
+            Os resultados contêm as informações e é possível baixar diretamente o documento clicando no link correspondente.<br>
+            Mais informações podem ser obtidas no portal da transparência <a href="https://transparencia.tapira.mg.leg.br/#/licitacoes">clicando aqui.</a>
         </p>
 
         <form method="get">
@@ -41,7 +42,8 @@
                 <input type="button" value="Limpar" class="botao-limpar" onclick="window.location.href=window.location.pathname;" />
             </div>
         </form>
-<div tal:define="
+
+        <div tal:define="
             portal python:context.portal_url.getPortalObject();
             catalog python:portal.portal_catalog;
             caminho python:'/'.join(context.getPhysicalPath());
@@ -59,14 +61,9 @@
             };
             
             dummy_termo python:termo and base_query.update({'SearchableText': termo});
-            dummy_ano python:ano and base_query.update({
-                'created': { 
-                    'query': ['%s-01-01 00:00:00' % ano, '%s-12-31 23:59:59' % ano], 
-                    'range': 'min:max' 
-                }
-            });
+            dummy_ano python:ano and base_query.update({'Description': ano});
             
-            resultados_totais python:tem_busca and [r for r in catalog(**base_query) if r.getPath() != caminho] or [];
+            resultados_totais python:tem_busca and catalog(**base_query) or [];
             
             b_size python: 10;
             b_start python: int(request.get('b_start', 0));
@@ -85,12 +82,6 @@
             <div tal:condition="tem_busca">
                 <p>
                     <strong>Total de resultados:</strong> <span tal:content="total_resultados">0</span>
-                    
-                    <a tal:condition="resultados_totais"
-                       tal:attributes="href python:'%s/relatorio_acordos_csv?q=%s&ano=%s' % (context.absolute_url(), termo, ano or '')"
-                       style="margin-left: 15px; text-decoration: none; padding: 4px 10px; background: #28a745; color: white; border-radius: 4px; font-weight: bold; font-size: 0.9em;">
-                       &darr; Exportar Relatório (CSV)
-                    </a>
                 </p>
 
                 <ul tal:condition="batch">
@@ -107,6 +98,7 @@
                 </ul>
 
                 <div class="paginacao" tal:condition="python: total_paginas > 1" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #ddd; text-align: center;">
+                    
                     <a tal:condition="tem_anterior"
                        tal:attributes="href python:'%s?q=%s&ano=%s&b_start=%s' % (request.get('ACTUAL_URL', ''), termo, ano or '', prev_start)"
                        class="botao-paginacao" 
@@ -120,11 +112,11 @@
                        tal:attributes="href python:'%s?q=%s&ano=%s&b_start=%s' % (request.get('ACTUAL_URL', ''), termo, ano or '', next_start)"
                        class="botao-paginacao" 
                        style="margin-left: 15px; text-decoration: none; padding: 5px 10px; background: #eee; border-radius: 4px;">Próxima &raquo;</a>
+                       
                 </div>
 
                 <p tal:condition="not:resultados_totais" style="color: #666; margin-top: 20px;">
-                    A Câmara Municipal de Tapira informa que não foram encontradas informações a respeito de acordos celebrados <br>
-                    sem a transferência de recursos no período selecionado.
+                    A Câmara Municipal informa que não foram encontrados resultados com os filtros utilizados.
                 </p>
             </div>
         </div>
