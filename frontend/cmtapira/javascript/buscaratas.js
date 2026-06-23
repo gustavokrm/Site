@@ -48,8 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
      });
 
 	document.getElementById('btn-limpar').addEventListener('click', () => {
-		document.getElementById('selecao-ano').value = "";
-		document.getElementById('selecao-tipo').value = "";
+		document.getElementById('ano-ata').value = "";
+		document.getElementById('select-mes').value = "";
+		document.getElementById('select-dia').value = "";
+		document.getElementById('select-tipo').value = "";
 		document.getElementById('lista-sessoes').innerHTML = "";
 		document.getElementById('controles-paginacao').style.display = "none";
 		const infoPagina = document.getElementById('info-pagina');
@@ -83,11 +85,21 @@ async function carregarSessoes(ano, pagina) {
 
 
     //const url = 'https://pesquisasapl.fastapicloud.dev/api/atas';
-    const url = 'http://127.0.0.1:8000/api/atas';
-    const params = `?ano=${ano}&pagina=${pagina}`;
+    const url = 'http://127.0.0.1:8000/api/atas';   
+    const tipo = document.getElementById('select-tipo').value;    
+    const mes = document.getElementById('select-mes').value;
+    const dia = document.getElementById('select-dia').value;
 
     try {
-        const response = await fetch(url + params);
+    
+        const params = new URLSearchParams();
+        params.append('ano', ano);       
+        
+        if (tipo) params.append('tipo', tipo);
+        if (mes) params.append('mes', mes);
+        if (dia) params.append('dia', dia);
+        
+        const response = await fetch(`${url}?${params}`);
 
         if(!response.ok){
             throw new Error("Erro na resposta da API");
@@ -148,17 +160,26 @@ function renderizarResultados(dados){
         container.innerHTML += htmlSessao;
     });
 
-    // Atualiza paginação com base no backend
-    btnAnterior.disabled = (dados.pagination.links.previous === null);
-    btnProximo.disabled = (dados.pagination.links.next === null);
-
+      
+    if (dados.pagination && dados.pagination.links) {
+        btnAnterior.disabled = (dados.pagination.links.previous === null);
+        btnProximo.disabled = (dados.pagination.links.next === null);
+        infoPagina.textContent = `Página ${dados.pagination.page} de ${dados.pagination.total_pages}`;
+    } else {
+        // Fallback: caso o backend mande apenas "results" sem "pagination"
+        btnAnterior.disabled = (paginaAtual === 1);
+        
+        // Se a lista de resultados for menor que o limite (ex: 100), significa que é a última página
+        btnProximo.disabled = (dados.results.length < 100); 
+        
+        infoPagina.textContent = `Página ${paginaAtual}`;
+    }
+        
     btnAnterior.style.opacity = btnAnterior.disabled ? "0.5" : "1";
     btnProximo.style.opacity = btnProximo.disabled ? "0.5" : "1";
-
-    // Mostra número real vindo da API
-    infoPagina.textContent = `Página ${dados.pagination.page} de ${dados.pagination.total_pages}`;
-
-    divPaginacao.style.display = "flex";
+    
+     divPaginacao.style.display = "flex";
+    
 
     } catch (erro) {
 

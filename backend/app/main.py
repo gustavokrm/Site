@@ -23,7 +23,9 @@ async def lifespan(app: FastAPI):
     #Fechar a conexão quando a API desligar
     await redis.aclose()
 
-app = FastAPI(lifespan=lifespan, docs_url=None,redoc_url=None)
+app = FastAPI(lifespan=lifespan)
+
+# , docs_url=None,redoc_url=None
 
 # anexa o limitador ao estado global da aplicação
 app.state.limiter = limiter
