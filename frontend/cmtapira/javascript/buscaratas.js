@@ -1,7 +1,7 @@
 import { escaparHTML } from './utils.js'; 
  
- let paginaAtual = 1;
- let anoPesquisado = "";
+let paginaAtual = 1;
+let anoPesquisado = "";
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -29,16 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
          const anoEscolhido = document.getElementById('ano-ata').value;
 
-
-         if (anoEscolhido === "") {
-
-             alert("Por favor, selecione um ano na lista.");
-
-             return;
-
-         }
-
-
          anoPesquisado = anoEscolhido;
 
          paginaAtual = 1; // Sempre que trocar o ano, volta para a página 1!
@@ -48,8 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
      });
 
 	document.getElementById('btn-limpar').addEventListener('click', () => {
-		document.getElementById('selecao-ano').value = "";
-		document.getElementById('selecao-tipo').value = "";
+		document.getElementById('ano-ata').value = "";
+		document.getElementById('select-mes').value = "";
+		document.getElementById('select-dia').value = "";
+		document.getElementById('select-tipo').value = "";
 		document.getElementById('lista-sessoes').innerHTML = "";
 		document.getElementById('controles-paginacao').style.display = "none";
 		const infoPagina = document.getElementById('info-pagina');
@@ -79,15 +71,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
  });
 
-async function carregarSessoes(ano, pagina) {
+async function carregarSessoes(ano, page) {
 
 
-    //const url = 'https://pesquisasapl.fastapicloud.dev/api/atas';
-    const url = 'http://127.0.0.1:8000/api/atas';
-    const params = `?ano=${ano}&pagina=${pagina}`;
+    const url = 'https://pesquisasapl.fastapicloud.dev/api/atas';     
+    const tipo = document.getElementById('select-tipo').value;    
+    const mes = document.getElementById('select-mes').value;
+    const dia = document.getElementById('select-dia').value;
 
     try {
-        const response = await fetch(url + params);
+                   
+        if(!tipo || !ano) {
+            alert("Por favor, preencha os campos obrigatórios: tipo de reunião e ano!");
+            return;
+        }
+        
+        const params = new URLSearchParams({
+            ano: ano,
+            page: page
+        });
+        
+        if (tipo) params.append('tipo', tipo);
+        if (mes) params.append('mes', mes);
+        if (dia) params.append('dia', dia);
+        
+        const response = await fetch(`${url}?${params.toString()}`);
 
         if(!response.ok){
             throw new Error("Erro na resposta da API");
@@ -147,19 +155,23 @@ function renderizarResultados(dados){
 
         container.innerHTML += htmlSessao;
     });
+    if (infoPagina) {
+        infoPagina.textContent = `Página ${paginaAtual}`;
+    }
 
-    // Atualiza paginação com base no backend
-    btnAnterior.disabled = (dados.pagination.links.previous === null);
-    btnProximo.disabled = (dados.pagination.links.next === null);
+    // O SAPL retorna "next" e "previous" diretamente na raiz de "dados"
+    const pagination = dados.pagination || {};
+    const links = pagination.links || {};
+
+    btnAnterior.disabled = (links.previous === null || links.previous === undefined);
+    btnProximo.disabled = (links.next === null || links.next === undefined);
 
     btnAnterior.style.opacity = btnAnterior.disabled ? "0.5" : "1";
     btnProximo.style.opacity = btnProximo.disabled ? "0.5" : "1";
 
-    // Mostra número real vindo da API
-    infoPagina.textContent = `Página ${dados.pagination.page} de ${dados.pagination.total_pages}`;
-
+    infoPagina.textContent = `Página ${pagination.page || 1} de ${pagination.total_pages || 1}`;
     divPaginacao.style.display = "flex";
-
+    
     } catch (erro) {
 
         container.innerHTML = "<p style='color:red; margin-top:20px;'>Erro ao conectar com o servidor.</p>";
