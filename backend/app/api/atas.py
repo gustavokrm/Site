@@ -8,15 +8,15 @@ from app.core.limiter import limiter
 router = APIRouter()
 
 @router.get("/api/atas")
-@limiter.limit("5/minute")
-@cache(expire=86400)
+@limiter.limit("50/minute")
+@cache(expire=43200)
 async def get_atas(
     request: Request,
     tipo: int = Query(...),
     ano: str = Query(..., min_length=4, max_length = 8),
     mes: Optional[str] = Query(None, max_length=10),
     dia: Optional[str] = Query(None, max_length=10),
-    pagina: int = Query(1, ge=1)
+    page: int = Query(1, ge=1)
     
     ):
     
@@ -26,10 +26,11 @@ async def get_atas(
             ano = ano,
             mes = mes,
             dia = dia,
-            page = pagina
+            page = page
         )
     
-        return {"results": atas}
+        return atas
+        
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     

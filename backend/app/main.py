@@ -46,7 +46,6 @@ app.include_router(projetos.router)
 app.include_router(pautas.router)
 app.include_router(atas.router)
 
-
 @app.get("/")
 def root():
     return {"API funcionando corretamente!"}
