@@ -4,6 +4,7 @@ from fastapi import HTTPException
 import requests
 import httpx
 import asyncio
+import traceback
 
 async def pesquisar_atas(
     tipo: int,
@@ -43,5 +44,5 @@ async def pesquisar_atas(
         except Exception as e:
             raise HTTPException(
             status_code=e.response.status_code,
-            detail=f"Erro {e.response.status_code} no SAPL ao acessar a URL: {url}")
+            detail=f"Erro {e.response.status_code} no SAPL ao acessar a URL: {url} Traceback: {traceback.format_exc()}")
 

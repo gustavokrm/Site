@@ -10,6 +10,7 @@ from fastapi import HTTPException
 import requests
 import httpx
 import asyncio
+import traceback
 
 baseURL = 'https://sapl.tapira.mg.leg.br/api'
 
@@ -25,7 +26,7 @@ async def fetch_json(client: httpx.AsyncClient, url: str, params: dict = None):
     except httpx.HTTPStatusError as e:
         raise HTTPException(
             status_code=e.response.status_code, 
-            detail=f"Erro {e.response.status_code} no SAPL ao acessar a URL: {url}"
+            detail=f"Erro {e.response.status_code} no SAPL ao acessar a URL: {url} Traceback: {traceback.format_exc()}"
         )
         
     return response.json()
@@ -62,7 +63,7 @@ async def buscarSessoes(
     async with httpx.AsyncClient(follow_redirects=True) as client:
     
         try: 
-            response = await client.get(url, params=params, timeout=10.0)
+            response = await client.get(url, params=params, timeout=20.0)
             
             if response.status_code!=200:
                 return {"error": "Erro ao acessar o SAPL"}
@@ -83,7 +84,7 @@ async def buscarSessoes(
         except Exception as e:
             raise HTTPException(
             status_code=e.response.status_code, 
-            detail=f"Erro {e.response.status_code} no SAPL ao acessar a URL: {url}")
+            detail=f"Erro {e.response.status_code} no SAPL ao acessar a URL: {url} Traceback: {traceback.format_exc()}")
             
     return resposta
     
@@ -100,7 +101,7 @@ async def buscarExpediente(sessao_id):
         expediente = response.get('results', [])
         return expediente
     except Exception as e:
-        print(f'Erro ao buscar expediente: {e}')
+        print(f'Erro ao buscar expediente: {e} Traceback: {traceback.format_exc()}')
         return None
 
 async def buscarOrdemDoDia(sessao_id):
@@ -115,7 +116,7 @@ async def buscarOrdemDoDia(sessao_id):
         ordem_do_dia = response.get('results', [])
         return ordem_do_dia
     except Exception as e:
-        print(f'Erro ao buscar ordem do dia: {e}')
+        print(f'Erro ao buscar ordem do dia: {e} Traceback: {traceback.format_exc()}')
         return None
     
 async def buscarMateria(materia_id):
@@ -125,5 +126,5 @@ async def buscarMateria(materia_id):
             materia = await fetch_json(client, url)
         return materia
     except Exception as e:
-        print(f'Erro ao buscar matéria: {e}')
+        print(f'Erro ao buscar matéria: {e} Traceback: {traceback.format_exc()}')
         return None
