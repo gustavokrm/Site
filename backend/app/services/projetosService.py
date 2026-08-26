@@ -20,7 +20,8 @@ async def buscar_tiposmateria() -> list:
     
     url_tipos = f"{BASE_URL}/materia/tipomaterialegislativa/"
     
-    async with httpx.AsyncClient(follow_redirects=True) as client:
+    limits = httpx.Limits(max_keepalive_connections=5, max_connections=10)
+    async with httpx.AsyncClient(follow_redirects=True, limits=limits) as client:
     
         while url_tipos:
             try:
@@ -49,12 +50,13 @@ async def carregar_todos_autores() -> list:
     todos_autores = []
     url_autor = f"{BASE_URL}/base/autor/?tipo=2"
     
-    async with httpx.AsyncClient() as client:
+    limits = httpx.Limits(max_keepalive_connections=5, max_connections=10)
+
+    async with httpx.AsyncClient(follow_redirects=True, limits=limits) as client:
         while url_autor:
             try:
                 response = await client.get(url_autor, timeout=20.0)
-                if response.status_code != 200:
-                    break
+                response.raise_for_status()
                     
                 dados = response.json()
                 todos_autores.extend(dados.get("results", []))
@@ -68,7 +70,13 @@ async def carregar_todos_autores() -> list:
                     proxima_url = proxima_url.replace("http://", "https://")
                     
                 url_autor = proxima_url
-                
+
+            except httpx.ConnectError as exc:
+                print(f"Erro de conexão ao acessar {url_autor}: {exc}")
+                break
+            except httpx.HTTPStatusError as exc:
+                print(f"Erro de status HTTP: {exc.response.status_code}")
+                break
             except Exception as e:
                 print(f"Erro ao buscar autores:: {traceback.format_exc()}")
                 break
@@ -85,6 +93,8 @@ async def buscar_tramitacao_async(client: httpx.AsyncClient, id_materia: int) ->
             dados = response.json()
             lista = dados.get("results", [])
             return lista[0] if lista else {}
+    except (httpx.ConnectTimeout, httpx.ReadTimeout):
+        print(f"Timeout ao buscar tramitação da matéria {id_materia}")
     except Exception as e:
         print(f"Erro na tramitação:: {traceback.format_exc()}")
     return {}
@@ -97,6 +107,8 @@ async def buscar_documentos_async(client: httpx.AsyncClient, id_materia: int) ->
         )
         if response.status_code == 200:
             return response.json().get("results", [])
+    except (httpx.ConnectTimeout, httpx.ReadTimeout):
+        print(f"Timeout ao buscar tramitação da matéria {id_materia}")
     except Exception:
         print(f"Erro ao buscar documentos acessórios: {traceback.format_exc()}")
     return []
@@ -121,8 +133,20 @@ async def pesquisar_materias(
     if numero: params["numero"] = numero
     if autor: params["autores"] = autor
     if expressoes: params["ementa__icontains"] = expressoes
+
+    sem = asyncio.Semaphore(5)
+
+    async def sem_tramitacao(client, id_materia):
+        async with sem:
+            return await buscar_tramitacao_async(client, id_materia)
+
+    async def sem_documentos(client, id_materia):
+        async with sem:
+            return await buscar_documentos_async(client, id_materia)
     
-    async with httpx.AsyncClient() as client:
+    limits = httpx.Limits(max_keepalive_connections=5, max_connections=10)
+
+    async with httpx.AsyncClient(limits=limits, follow_redirects=True) as client:
         try:
             response = await client.get(f"{BASE_URL}/materia/materialegislativa/", params=params, timeout=20.0)
             if response.status_code != 200:
@@ -142,8 +166,8 @@ async def pesquisar_materias(
                     materia["data_apresentacao_formatada"] = formatar_data_br(materia["data_apresentacao"])
                 
                 if id_materia:
-                    tarefas.append(buscar_tramitacao_async(client, id_materia))
-                    tarefas.append(buscar_documentos_async(client, id_materia))
+                    tarefas.append(sem_tramitacao(client, id_materia))
+                    tarefas.append(sem_documentos(client, id_materia))
 
             if tarefas:
                 resultados = await asyncio.gather(*tarefas)
@@ -171,6 +195,9 @@ async def pesquisar_materias(
                         materia["documentos_accessorios"] = documentos
             
             return dados
-            
+
+        except (httpx.ConnectTimeout, httpx.ReadTimeout):
+            print(f"Timeout ao buscar documentos acessórios da matéria")
+            return {"error": "Timeout na resposta do servidor SAPL"}
         except httpx.RequestError as e:
             return {f"Erro ao listar projetos: {traceback.format_exc()}"}
