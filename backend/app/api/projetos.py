@@ -48,7 +48,7 @@ async def listar_autores(request: Request):
         return autores
     except Exception as e:
         print(f"Erro ao listar projetos: {traceback.format_exc()}")
-        #raise HTTPException(status_code=500, detail=str(e))
+
 
 @router.get("/api/materias/tipos")
 @limiter.limit("20/minute")
@@ -59,4 +59,4 @@ async def listar_tiposmateria(request: Request):
         return tipos
     except Exception as e:
         print(f"Erro ao listar projetos: {traceback.format_exc()}")
-        #raise HTTPException(status_code=500, detail=str(e))
+
