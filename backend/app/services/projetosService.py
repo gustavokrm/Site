@@ -1,6 +1,7 @@
 from datetime import datetime
 import asyncio
 import httpx
+import traceback
 
 BASE_URL = "https://sapl.tapira.mg.leg.br/api"
 
@@ -23,7 +24,7 @@ async def buscar_tiposmateria() -> list:
     
         while url_tipos:
             try:
-                response = await client.get(url_tipos, timeout=10.0)
+                response = await client.get(url_tipos, timeout=20.0)
                 if response.status_code !=200:
                     break
                 
@@ -40,7 +41,7 @@ async def buscar_tiposmateria() -> list:
                 url_tipos = proxima_url
             
             except Exception as e:
-                print(f"Erro ao buscar tipos de matéria: {e}")
+                print(f"Erro ao buscar tipos de matéria: {traceback.format_exc()}")
                 break
     return todos_tipos
 
@@ -51,7 +52,7 @@ async def carregar_todos_autores() -> list:
     async with httpx.AsyncClient() as client:
         while url_autor:
             try:
-                response = await client.get(url_autor, timeout=5.0)
+                response = await client.get(url_autor, timeout=20.0)
                 if response.status_code != 200:
                     break
                     
@@ -69,7 +70,7 @@ async def carregar_todos_autores() -> list:
                 url_autor = proxima_url
                 
             except Exception as e:
-                print(f"Erro ao carregar autores: {e}")
+                print(f"Erro ao buscar autores:: {traceback.format_exc()}")
                 break
                 
     return todos_autores
@@ -78,26 +79,26 @@ async def buscar_tramitacao_async(client: httpx.AsyncClient, id_materia: int) ->
     try:
         response = await client.get(
             f"{BASE_URL}/materia/tramitacao/?materia={id_materia}&o=-data_tramitacao", 
-            timeout=5.0
+            timeout=20.0
         )
         if response.status_code == 200:
             dados = response.json()
             lista = dados.get("results", [])
             return lista[0] if lista else {}
     except Exception as e:
-        print(f"Erro na tramitação {id_materia}: {e}")
+        print(f"Erro na tramitação:: {traceback.format_exc()}")
     return {}
 
 async def buscar_documentos_async(client: httpx.AsyncClient, id_materia: int) -> list:
     try:
         response = await client.get(
             f"{BASE_URL}/materia/documentoacessorio/?materia={id_materia}", 
-            timeout=5.0
+            timeout=20.0
         )
         if response.status_code == 200:
             return response.json().get("results", [])
     except Exception:
-        pass
+        print(f"Erro ao buscar documentos acessórios: {traceback.format_exc()}")
     return []
 
 async def pesquisar_materias(
@@ -123,7 +124,7 @@ async def pesquisar_materias(
     
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.get(f"{BASE_URL}/materia/materialegislativa/", params=params, timeout=10.0)
+            response = await client.get(f"{BASE_URL}/materia/materialegislativa/", params=params, timeout=20.0)
             if response.status_code != 200:
                 return {"error": "Erro ao acessar o SAPL"}
             
@@ -172,4 +173,4 @@ async def pesquisar_materias(
             return dados
             
         except httpx.RequestError as e:
-            return {"error": f"Falha de comunicação com o SAPL: {str(e)}"}
+            return {f"Erro ao listar projetos: {traceback.format_exc()}"}

@@ -71,10 +71,8 @@ async function carregarTiposMateria() {
             const resposta = await fetch(`${URL_BACKEND}/tipos`);
             if(!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
             const todosTipos = await resposta.json();
-            
-        }
 
-        todosTipos.forEach(tipo => {
+            todosTipos.forEach(tipo => {
             const opcaoHTML = document.createElement('option');
             opcaoHTML.value = tipo.id;
             opcaoHTML.textContent = tipo.descricao || tipo.nome;
