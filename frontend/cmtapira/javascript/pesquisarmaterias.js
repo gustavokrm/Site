@@ -1,5 +1,6 @@
 
-const URL_BACKEND = 'https://pesquisasapl.fastapicloud.dev/api/materias';
+//const URL_BACKEND = 'https://pesquisasapl.fastapicloud.dev/api/materias';
+const URL_BACKEND = 'http://127.0.0.1/api/materias';
 
 let paginaAtual = 1;
 
@@ -71,10 +72,8 @@ async function carregarTiposMateria() {
             const resposta = await fetch(`${URL_BACKEND}/tipos`);
             if(!resposta.ok) throw new Error(`Erro: ${resposta.status}`);
             const todosTipos = await resposta.json();
-            
-        }
 
-        todosTipos.forEach(tipo => {
+            todosTipos.forEach(tipo => {
             const opcaoHTML = document.createElement('option');
             opcaoHTML.value = tipo.id;
             opcaoHTML.textContent = tipo.descricao || tipo.nome;

@@ -1,3 +1,4 @@
+import traceback
 from typing import Optional
 from fastapi import APIRouter, Query, HTTPException, Request
 from fastapi_cache.decorator import cache
@@ -35,7 +36,7 @@ async def listar_projetos(
         )
         return projetos
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Erro ao listar projetos: {traceback.format_exc()}")
 
 @router.get("/api/materias/autores")    
 @limiter.limit("20/minute")
@@ -46,7 +47,8 @@ async def listar_autores(request: Request):
         )
         return autores
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Erro ao listar projetos: {traceback.format_exc()}")
+        #raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/api/materias/tipos")
 @limiter.limit("20/minute")
@@ -56,4 +58,5 @@ async def listar_tiposmateria(request: Request):
         tipos = await buscar_tiposmateria()
         return tipos
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Erro ao listar projetos: {traceback.format_exc()}")
+        #raise HTTPException(status_code=500, detail=str(e))
