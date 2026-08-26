@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      metal:use-macro="context/main_template/macros/master"
+      i18n:domain="plone">
+      <head>
+      <metal:head fill-slot="head_slot">
+        <script type="module" tal:attributes="src string:${context/portal_url}/++theme++cmtapira/javascript/vereadores.js"></script>
+        <link rel="stylesheet" tal:attributes="href string:${context/portal_url}++theme++cmtapira/css/style.css">
+      </metal:head>
+     </head>
+<body>
+    <metal:block fill-slot="main">
+        <tal:main-macro metal:define-macro="main">
+            <div id="content-core">
+                <article class="documentFirstHeading">
+                    <h1 class="documentFirstHeading" tal:content="context/Title">Vereadores</h1>
+                    <p class="documentDescription" tal:content="context/Description">Lista dos parlamentares da legislatura atual.</p>
+                </article>
+
+                <ul id="lista-vereadores-api">
+                    <div class="loading-status">Carregando vereadores e Mesa Diretora...</div>
+                </ul>
+
+            <div id="modal-vereador" class="modal-overlay">
+                <div class="modal-container">
+                    <button id="btn-fechar-modal" class="btn-fechar" aria-label="Fechar">&times;</button>
+                    <div id="modal-conteudo">
+                        <div class="loading-status">Carregando detalhes do parlamentar...</div>
+                    </div>
+                </div>
+            </div>
+
+            </div>
+        </tal:main-macro>
+    </metal:block>
+</body>
+</html>

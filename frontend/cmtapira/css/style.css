@@ -1069,3 +1069,206 @@ button.btn-detalhes {
 .pagina-pesquisa-legislativa .botao-pesquisar-atas:hover:not(:disabled) {
     background-color: #008ee0;
 }
+
+#lista-vereadores-api {
+list-style: none;
+padding: 0;
+margin: 30px 0;
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+gap: 24px;
+}
+
+#lista-vereadores-api li {
+position: relative;
+border-radius: 12px;
+overflow: hidden;
+box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+background-color: #f8f9fa;
+aspect-ratio: 3 / 4;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#lista-vereadores-api li:hover {
+transform: translateY(-6px);
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card-content {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.card-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.88) 0%,
+                              rgba(0, 0, 0, 0.4) 45%,
+                              rgba(0, 0, 0, 0) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.partido-tag {
+  align-self: flex-start;
+  background-color: #0056b3;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.card-text .nome {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1.25;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+}
+
+.card-text .cargo {
+  font-size: 0.85rem;
+  color: #ffca28;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-top: 2px;
+}
+
+.link-mascara {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  text-indent: -9999px;
+}
+
+.loading-status {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  padding: 40px 0;
+}
+
+/* Estilos do Modal (Pop-up) */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  z-index: 9999;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.ativo {
+  display: flex;
+}
+
+.modal-container {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 650px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 28px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+  color: #333;
+}
+
+.btn-fechar {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #888;
+  cursor: pointer;
+  border: none;
+  background: none;
+  line-height: 1;
+}
+
+.btn-fechar:hover {
+  color: #000;
+}
+
+.modal-header {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.modal-foto {
+  width: 140px;
+  height: 175px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.modal-info-basica h2 {
+  margin: 0 0 10px 0;
+  font-size: 1.4rem;
+  color: #111;
+}
+
+.modal-info-basica p {
+  margin: 6px 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.modal-info-basica strong {
+  color: #222;
+}
+
+.modal-biografia {
+  margin-top: 15px;
+}
+
+.modal-biografia h3 {
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+  color: #0056b3;
+}
+
+.modal-biografia-texto {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #444;
+  white-space: pre-line;
+}
+
