@@ -12,7 +12,6 @@ document.addEventListener("DOMContentLoaded", function() {
     // a ideia é pesquisar somente caso o botão pesquisar seja acionado, não automaticamente
     // após os campos serem selecionados
 
-
     document.getElementById('btn-pesquisar').addEventListener('click', () => {
 
         paginaAtual = 1;
@@ -34,8 +33,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     document.getElementById('btn-limpar').addEventListener('click', () => {
-        // limpa todos os campos
-                       
         document.getElementById('selecao-ano').value = "";
         document.getElementById('selecao-autor').value = "";
         document.getElementById('lista-sessoes').innerHTML = "";
@@ -61,7 +58,7 @@ function carregarSessoes(ano, pagina) {
     fetch(forceHttps(url))
     .then(response => response.json())
     .then(data => {
-        // Se houver um autor selecionado, filtramos o array 'results' antes de renderizar
+
         if(!ano) {
             alert("Favor selecionar um ano antes de pesquisar!");
             return;
@@ -69,12 +66,11 @@ function carregarSessoes(ano, pagina) {
         
         if (idAutorSelecionado && idAutorSelecionado !== "") {
             const resultadosFiltrados = data.results.filter(sessao => {
-                // Verificamos se dentro da lista de autores da matéria existe o ID selecionado
-                // Importante: o ID costuma vir como número ou string, por isso usamos '=='
+
                 return sessao.materia.autores && sessao.materia.autores.some(autor => autor.id == idAutorSelecionado);
             });
 
-            // Sobrescrevemos os resultados brutos pelos filtrados para a renderização
+
             data.results = resultadosFiltrados;
         }
         else if (!idAutorSelecionado) {
@@ -109,7 +105,7 @@ function renderizarResultados(data) {
     }
 
     listaMaterias.forEach(sessao => {
-        // Extracting author names from the expanded array
+
         const nomesAutores = sessao.materia.autores
         ? sessao.materia.autores.map(a => a.nome).join(", ")
         : "Autor não informado";

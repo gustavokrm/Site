@@ -32,7 +32,7 @@ async def buscar_tiposmateria() -> list:
                 dados = response.json()
                 todos_tipos.extend(dados.get("results", []))
                 
-                # pagination.links.next
+
                 proxima_url = dados.get("next")
                 if not proxima_url:
                     proxima_url = dados.get("pagination", {}).get("links", {}).get("next")

@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const anoAtual = new Date().getFullYear();
     const anoInicial = 2021;
 
-    // Popula o select de anos dinamicamente
+
     for (let ano = anoAtual; ano >= anoInicial; ano--) {
         const novaOpcao = document.createElement('option');
         novaOpcao.value = ano;
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarTiposMateria();
     carregarAutor();
 
-    // Eventos dos botões
+
     document.getElementById('btn-pesquisar').addEventListener('click', () => {
         paginaAtual = 1;
         pesquisaMateria(paginaAtual);
@@ -42,14 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('btn-limpar').addEventListener('click', () => {
-        // Limpa todos os campos
+
         document.getElementById('tipo-materia').value = "";
         document.getElementById('selecao-ano').value = "";
         document.getElementById('numero-materia').value = "";
         document.getElementById('selecao-autor').value = "";
         document.getElementById('pesquisar-expressoes').value = "";
 
-        // Limpa os resultados e paginação da tela
         document.getElementById('lista-sessoes').innerHTML = "";
         document.getElementById('controles-paginacao').style.display = "none";
         
@@ -63,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function carregarTiposMateria() {
     const selectTipo = document.getElementById('tipo-materia');
-    let urlTiposSapl = `${URL_BACKEND}/tipos`; // URL do seu backend local que busca os tipos do SAPL
+    let urlTiposSapl = `${URL_BACKEND}/tipos`;
     let todosTipos = [];
 
     try {
@@ -136,8 +135,7 @@ async function pesquisaMateria(pagina) {
        
         const dados = await resposta.json();
         
-        // Renderiza os resultados recebidos
-        renderizarResultados(dados);
+         renderizarResultados(dados);
 
     } catch (erro) {
         console.error("Falha ao buscar matérias:", erro);
@@ -153,7 +151,7 @@ function renderizarResultados(dados) {
     const divPaginacao = document.getElementById('controles-paginacao');
     const containerResultados = document.getElementById('lista-sessoes');
     
-    containerResultados.innerHTML = ''; // Limpa a busca anterior
+    containerResultados.innerHTML = '';
     const listaMaterias = dados.results || [];
 
     if (listaMaterias.length === 0) {
@@ -173,7 +171,7 @@ function renderizarResultados(dados) {
             ? `<a title="Baixe a matéria em PDF" href="${materia.texto_original}" target="_blank" class="btn-baixar">Baixar Matéria (PDF)</a>`
             : `<span style="color:#777; font-size:0.9em; display:inline-block; margin-top:10px;">(Matéria não disponível)</span>`;
 
-        // Monta os links dos anexos (documentos acessórios)
+
         let documentosHTML = '';
         const docs = materia.documentos_accessorios || [];
         
