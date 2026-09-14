@@ -9,7 +9,7 @@ router = APIRouter()
 
 @router.get("/api/pautas/pesquisar")
 @limiter.limit("20/minute")
-#@cache(expire=43200)
+@cache(expire=43200)
 async def get_pautas(
     request: Request, 
     tipo: int = Query(...),

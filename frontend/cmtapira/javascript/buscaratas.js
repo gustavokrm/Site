@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
          anoPesquisado = anoEscolhido;
 
-         paginaAtual = 1; // Sempre que trocar o ano, volta para a página 1!
+         paginaAtual = 1;
 
          carregarSessoes(anoPesquisado, paginaAtual);
 
@@ -65,10 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
      });
      
-     // Inicia a primeira busca na página 1
-
-     //carregarSessoes(anoPesquisado, paginaAtual);
-
  });
 
 async function carregarSessoes(ano, page) {
@@ -159,7 +155,6 @@ function renderizarResultados(dados){
         infoPagina.textContent = `Página ${paginaAtual}`;
     }
 
-    // O SAPL retorna "next" e "previous" diretamente na raiz de "dados"
     const pagination = dados.pagination || {};
     const links = pagination.links || {};
 

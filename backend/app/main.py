@@ -20,19 +20,17 @@ async def lifespan(app: FastAPI):
     redis = aioredis.from_url(REDIS_URL)
     FastAPICache.init(RedisBackend(redis), prefix="sapl-cache")
     yield
-    #Fechar a conexão quando a API desligar
+
     await redis.aclose()
 
 app = FastAPI(lifespan=lifespan)
 #app = FastAPI(lifespan=lifespan, docs_url=None, redoc_url=None)
 
-# anexa o limitador ao estado global da aplicação
+
 app.state.limiter = limiter
 
-# lida com o erro de excesso de requisições
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# middleware, permite somente origens conhecidas e métodos aprovados
 app.add_middleware(
     CORSMiddleware,
     allow_origins=['https://www.tapira.mg.leg.br', 'https://tapira.mg.leg.br'],

@@ -3,14 +3,14 @@ import { formatarDataBR, pegarNomeDoAutor, escaparHTML } from './utils.js';
 // const baseUrl = "https://pesquisasapl.fastapicloud.dev/api";
 const baseUrl = "http://127.0.0.1:8000/api"
 
-let todasSessoes = []; // Aqui guardaremos todos os dados vindos da API
+let todasSessoes = [];
 let paginaAtual = 1;
-const itensPorPagina = 10; // Defina a quantidade de itens por página
+const itensPorPagina = 10;
 
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-pesquisar').addEventListener('click', () => {
         paginaAtual = 1;
-        buscarReuniao(); // Agora busca na API e depois renderiza a página 1
+        buscarReuniao();
     });
     
     document.getElementById('btn-limpar').addEventListener('click', () => {
@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('detalhes-reuniao').style.display = 'none';
         document.getElementById('titulo-sessao').innerText = 'Pesquise as pautas de reunião';
         
-        // Limpar os dados armazenados
         todasSessoes = [];
         paginaAtual = 1;
         document.getElementById('controles-paginacao').style.display = 'none';
@@ -33,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('btn-anterior').addEventListener('click', () => {
         if (paginaAtual > 1) {
             paginaAtual--;
-            renderizarSessoes(); // Apenas renderiza os dados já salvos
+            renderizarSessoes();
         }
     });
 
@@ -41,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalPaginas = Math.ceil(todasSessoes.length / itensPorPagina);
         if (paginaAtual < totalPaginas) {
             paginaAtual++;
-            renderizarSessoes(); // Apenas renderiza os dados já salvos
+            renderizarSessoes();
         }
     });
 });
@@ -101,8 +100,7 @@ async function buscarReuniao() {
     containerSessoes.innerHTML = "<p><em>Buscando sessões...</em></p>";
 
     try {
-        // Removemos o 'page' dos parâmetros, assumindo que a API traz tudo 
-        // ou traz tudo filtrado pelos parâmetros abaixo
+
         const params = new URLSearchParams({
             'tipo': tipo,
             'ano': ano,
@@ -113,7 +111,7 @@ async function buscarReuniao() {
         const resSessao = await fetch(`${baseUrl}/pautas/pesquisar/?${params}`);
         const jsonSessao = await resSessao.json();
 
-        // Salva todos os resultados no array global
+
         todasSessoes = jsonSessao.results || [];
 
         if (todasSessoes.length === 0) {
@@ -124,7 +122,6 @@ async function buscarReuniao() {
             return;
         }
 
-        // Após buscar tudo, chamamos a função que corta e desenha na tela
         renderizarSessoes();
 
     } catch (erro) {
@@ -135,7 +132,7 @@ async function buscarReuniao() {
     }
 }
 
-// 2. Função para PEGAR 10 ITENS do array e desenhar na tela (Paginação Local)
+
 function renderizarSessoes() {
     const containerSessoes = document.getElementById('lista-sessoes');
     const btnAnterior = document.getElementById('btn-anterior');
@@ -148,7 +145,7 @@ function renderizarSessoes() {
     const indiceFim = indiceInicio + itensPorPagina;
     const sessoesDaPagina = todasSessoes.slice(indiceInicio, indiceFim);
 
-    // Montar o HTML apenas com as sessões daquela página
+
     let html = "";
     for (let i = 0; i < sessoesDaPagina.length; i++) {
         const sessao = sessoesDaPagina[i];
@@ -163,7 +160,7 @@ function renderizarSessoes() {
     
     containerSessoes.innerHTML = html;
 
-    // Adiciona o evento de clique nos botões usando as sessões *da página atual*
+
     containerSessoes.querySelectorAll('.btn-ver-detalhes').forEach(button => {
         button.addEventListener('click', () => {
             const index = Number(button.dataset.index);
@@ -172,7 +169,7 @@ function renderizarSessoes() {
         });
     });
     
-    // Atualiza o estado dos botões de paginação
+
     if (btnAnterior && btnProximo) {
         const totalPaginas = Math.ceil(todasSessoes.length / itensPorPagina);
         
